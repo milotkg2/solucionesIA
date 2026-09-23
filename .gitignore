@@ -1,0 +1,41 @@
+# Entorno y secretos
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Node (por si se usa UI)
+node_modules/
+dist/
+.angular/
+
+# IDE / SO
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Datos generados / vectores
+data/vectorstore/
+*.faiss
+*.index
+chroma_db/
+
+# Logs
+*.log
+logs/
