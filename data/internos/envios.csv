@@ -1,0 +1,41 @@
+codigo_seguimiento,retailer,servicio,hub_origen,comuna_destino,fecha_compra,fecha_promesa,fecha_entrega_real,estado,intentos_entrega,motivo_falla,transportista_tipo,peso_kg,ventana_horaria,temporada,plazo_extendido_informado,observacion
+LR-2026-004182,TiendaNova,ND,Quilicura,Maipu,2026-09-15,2026-09-16,,EN_RUTA,0,M01,Propio,2.4,09:00-14:00,ALTA,NO,Ruta R-118 retorno a hub sin intento por cierre de Avenida Pajaritos
+LR-2026-005271,MegaHogar,ST,San Bernardo,Puente Alto,2026-09-11,2026-09-16,,INTENTO_FALLIDO,2,M02,Propio,8.1,14:00-19:00,ALTA,SI,Domicilio sin moradores en ambos intentos, timbre sin respuesta
+LR-2026-006123,ZapatoExpress,ND,Pudahuel,La Florida,2026-09-17,2026-09-18,,DIRECCION_OBSERVADA,1,M03,Freelance,0.9,09:00-14:00,ALTA,SI,Direccion sin numero ni departamento, cliente no contesta llamado
+LR-2026-007334,ElectroMax,SD,Quilicura,Las Condes,2026-09-16,2026-09-16,,EN_HUB,0,M04,Propio,14.2,09:00-13:00,ALTA,NO,Detenido en hub desde 2026-09-16 sin asignacion de ruta por sobrecarga de clasificacion
+LR-2026-008455,DecoCasa,ST,San Bernardo,Nunoa,2026-09-14,2026-09-17,2026-09-18,ENTREGADO,1,M01,Freelance,5.6,14:00-19:00,ALTA,NO,Entregado un dia despues de la fecha promesa informada al consumidor
+LR-2026-009011,TiendaNova,ND,Pudahuel,Penalolen,2026-09-12,2026-09-15,,INCIDENTE,0,M07,Freelance,1.3,09:00-14:00,ALTA,SI,Sin movimiento registrado desde 2026-09-13, paquete no localizable en red
+LR-2026-004190,TiendaNova,ND,Quilicura,Providencia,2026-09-15,2026-09-16,2026-09-16,ENTREGADO,1,,Propio,1.1,09:00-14:00,ALTA,NO,Entrega conforme en primer intento
+LR-2026-004203,TiendaNova,ST,Quilicura,Santiago,2026-09-14,2026-09-17,2026-09-17,ENTREGADO,1,,Propio,3.2,14:00-19:00,ALTA,NO,Entrega conforme
+LR-2026-004211,TiendaNova,ND,Quilicura,Maipu,2026-09-15,2026-09-16,,EN_RUTA,0,M01,Propio,2.0,09:00-14:00,ALTA,NO,Ruta R-118 afectada por el mismo cierre vial
+LR-2026-004225,TiendaNova,ND,Quilicura,Pudahuel,2026-09-15,2026-09-16,,EN_RUTA,0,M01,Propio,4.5,09:00-14:00,ALTA,NO,Ruta R-118 afectada por el mismo cierre vial
+LR-2026-004238,TiendaNova,ST,Quilicura,Recoleta,2026-09-16,2026-09-21,2026-09-21,ENTREGADO,1,,Freelance,0.7,14:00-19:00,ALTA,NO,Entrega conforme
+LR-2026-005288,MegaHogar,SE,San Bernardo,Buin,2026-09-10,2026-09-17,2026-09-17,ENTREGADO,2,M02,Freelance,22.5,09:00-14:00,ALTA,SI,Entregado en segundo intento dentro de plazo
+LR-2026-005294,MegaHogar,ST,San Bernardo,La Pintana,2026-09-12,2026-09-17,,INTENTO_FALLIDO,1,M06,Freelance,11.0,14:00-19:00,ALTA,SI,Acceso no autorizado en condominio, se requiere coordinacion previa
+LR-2026-005301,MegaHogar,ST,San Bernardo,Macul,2026-09-13,2026-09-18,2026-09-18,ENTREGADO,1,,Propio,6.4,09:00-14:00,ALTA,SI,Entrega conforme
+LR-2026-005317,MegaHogar,SE,San Bernardo,Melipilla,2026-09-09,2026-09-16,2026-09-19,ENTREGADO,2,M04,Freelance,18.7,09:00-14:00,ALTA,SI,Retraso de tres dias por detencion en hub, entregado en segundo intento
+LR-2026-005322,MegaHogar,ST,San Bernardo,Puente Alto,2026-09-15,2026-09-18,,RECHAZADO,1,M05,Propio,9.3,14:00-19:00,ALTA,SI,Consumidor se niega a recibir por compra duplicada
+LR-2026-006131,ZapatoExpress,ND,Pudahuel,Estacion Central,2026-09-17,2026-09-18,2026-09-18,ENTREGADO,1,,Freelance,0.6,09:00-14:00,ALTA,SI,Entrega conforme
+LR-2026-006145,ZapatoExpress,ND,Pudahuel,Quilicura,2026-09-16,2026-09-17,2026-09-19,ENTREGADO,1,M01,Freelance,0.8,14:00-19:00,ALTA,SI,Retraso de dos dias por sobrecarga de ruta
+LR-2026-006152,ZapatoExpress,ND,Pudahuel,Renca,2026-09-18,2026-09-21,,INTENTO_FALLIDO,3,M02,Freelance,1.2,09:00-14:00,NORMAL,SI,Tercer intento fallido, corresponde evaluar devolucion al origen
+LR-2026-006168,ZapatoExpress,ND,Pudahuel,La Cisterna,2026-09-18,2026-09-21,2026-09-21,ENTREGADO,1,,Propio,0.5,09:00-14:00,NORMAL,SI,Entrega conforme
+LR-2026-007341,ElectroMax,ND,Quilicura,Vitacura,2026-09-16,2026-09-17,,EN_HUB,0,M04,Propio,31.0,09:00-13:00,ALTA,NO,Detenido en hub por sobrecarga de clasificacion
+LR-2026-007356,ElectroMax,SD,Quilicura,Las Condes,2026-09-18,2026-09-18,2026-09-18,ENTREGADO,1,,Propio,7.8,09:00-13:00,NORMAL,NO,Entrega same day conforme
+LR-2026-007362,ElectroMax,ND,Quilicura,Lo Barnechea,2026-09-15,2026-09-16,2026-09-21,ENTREGADO,1,M04,Propio,45.3,09:00-13:00,ALTA,NO,Retraso de cinco dias por quiebre de capacidad del hub Quilicura
+LR-2026-007375,ElectroMax,SD,Quilicura,Providencia,2026-09-21,2026-09-21,2026-09-21,ENTREGADO,1,,Propio,3.9,09:00-13:00,NORMAL,NO,Entrega same day conforme
+LR-2026-008462,DecoCasa,ST,San Bernardo,Nunoa,2026-09-15,2026-09-18,2026-09-18,ENTREGADO,1,,Freelance,12.4,14:00-19:00,ALTA,NO,Entrega conforme
+LR-2026-008477,DecoCasa,ST,San Bernardo,Santiago,2026-09-16,2026-09-21,2026-09-22,ENTREGADO,1,M01,Freelance,4.1,14:00-19:00,ALTA,NO,Retraso de un dia por congestion vial
+LR-2026-008483,DecoCasa,ST,San Bernardo,San Miguel,2026-09-17,2026-09-22,,EN_RUTA,0,,Freelance,8.9,09:00-14:00,NORMAL,NO,En ruta dentro de plazo
+LR-2026-008491,DecoCasa,ST,San Bernardo,Independencia,2026-09-18,2026-09-23,,EN_HUB,0,,Freelance,2.7,14:00-19:00,NORMAL,NO,En hub dentro de plazo
+LR-2026-009024,TiendaNova,ST,Pudahuel,Colina,2026-09-14,2026-09-17,2026-09-17,ENTREGADO,1,,Freelance,6.1,09:00-14:00,ALTA,NO,Entrega conforme
+LR-2026-009038,TiendaNova,ND,Pudahuel,Lampa,2026-09-16,2026-09-17,,DIRECCION_OBSERVADA,1,M03,Freelance,1.8,09:00-14:00,ALTA,NO,Comuna informada no corresponde al hub asignado
+LR-2026-009045,TiendaNova,ND,Pudahuel,Padre Hurtado,2026-09-17,2026-09-18,2026-09-18,ENTREGADO,1,,Propio,2.2,14:00-19:00,ALTA,NO,Entrega conforme
+LR-2026-009059,TiendaNova,ST,Pudahuel,Talagante,2026-09-15,2026-09-18,2026-09-22,ENTREGADO,2,M02,Freelance,3.6,09:00-14:00,ALTA,NO,Entregado en segundo intento con cuatro dias de retraso
+LR-2026-009063,TiendaNova,ND,Pudahuel,Til Til,2026-09-19,2026-09-22,,EN_RUTA,0,,Freelance,1.5,09:00-14:00,NORMAL,NO,En ruta dentro de plazo
+LR-2026-010101,MegaHogar,ST,Quilicura,Cerro Navia,2026-09-11,2026-09-16,2026-09-22,ENTREGADO,3,M02,Freelance,7.2,14:00-19:00,ALTA,SI,Entregado en tercer intento con seis dias de retraso
+LR-2026-010118,MegaHogar,ST,Quilicura,Conchali,2026-09-12,2026-09-17,,DEVUELTO_ORIGEN,3,M02,Freelance,5.0,09:00-14:00,ALTA,SI,Tres intentos fallidos, devuelto al retailer
+LR-2026-010124,ElectroMax,ND,Pudahuel,Huechuraba,2026-09-18,2026-09-21,2026-09-21,ENTREGADO,1,,Propio,19.4,09:00-13:00,NORMAL,NO,Entrega conforme
+LR-2026-010137,ZapatoExpress,ND,Quilicura,Quinta Normal,2026-09-19,2026-09-22,,INTENTO_FALLIDO,1,M02,Freelance,0.4,14:00-19:00,NORMAL,SI,Primer intento fallido, cliente ausente
+LR-2026-010142,DecoCasa,SE,San Bernardo,Paine,2026-09-10,2026-09-17,2026-09-16,ENTREGADO,1,,Freelance,27.8,09:00-14:00,ALTA,NO,Entrega anticipada conforme
+LR-2026-010156,TiendaNova,ST,San Bernardo,El Bosque,2026-09-16,2026-09-21,,EN_RUTA,0,,Propio,4.7,14:00-19:00,ALTA,NO,En ruta dentro de plazo
+LR-2026-010163,ElectroMax,SD,Quilicura,Nunoa,2026-09-22,2026-09-22,,EN_RUTA,0,,Propio,10.5,09:00-13:00,NORMAL,NO,En ruta same day dentro de plazo

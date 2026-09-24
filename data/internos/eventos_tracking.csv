@@ -1,0 +1,43 @@
+codigo_seguimiento,fecha_hora,estado_evento,ubicacion,detalle
+LR-2026-004182,2026-09-15 18:40,RECEPCIONADO,Hub Quilicura,Paquete recibido desde bodega del retailer
+LR-2026-004182,2026-09-16 06:12,CLASIFICADO,Hub Quilicura,Asignado a ruta R-118
+LR-2026-004182,2026-09-16 08:05,EN_RUTA,Ruta R-118,Salida de hub con 96 paradas asignadas
+LR-2026-004182,2026-09-16 17:55,RETORNO_A_HUB,Hub Quilicura,Ruta incompleta, 23 paradas no visitadas por cierre de Avenida Pajaritos
+LR-2026-004182,2026-09-17 07:30,REPROGRAMADO,Hub Quilicura,Pendiente de reasignacion, sin intento de entrega registrado
+LR-2026-005271,2026-09-11 19:20,RECEPCIONADO,Hub San Bernardo,Paquete recibido desde bodega del retailer
+LR-2026-005271,2026-09-14 08:10,EN_RUTA,Ruta R-204,Salida de hub
+LR-2026-005271,2026-09-14 15:42,INTENTO_FALLIDO,Puente Alto,Primer intento, domicilio sin moradores
+LR-2026-005271,2026-09-16 16:18,INTENTO_FALLIDO,Puente Alto,Segundo intento, timbre sin respuesta
+LR-2026-005271,2026-09-17 09:00,PENDIENTE_REPROGRAMACION,Hub San Bernardo,A la espera de coordinacion de ventana horaria con el consumidor
+LR-2026-006123,2026-09-17 20:05,RECEPCIONADO,Hub Pudahuel,Paquete recibido desde bodega del retailer
+LR-2026-006123,2026-09-18 08:30,EN_RUTA,Ruta R-331,Salida de hub
+LR-2026-006123,2026-09-18 13:10,DIRECCION_OBSERVADA,La Florida,Direccion sin numero ni departamento, no es posible ubicar el domicilio
+LR-2026-006123,2026-09-18 17:00,CONTACTO_FALLIDO,Hub Pudahuel,Primer llamado al consumidor sin respuesta
+LR-2026-006123,2026-09-19 11:20,CONTACTO_FALLIDO,Hub Pudahuel,Segundo llamado al consumidor sin respuesta
+LR-2026-007334,2026-09-16 07:45,RECEPCIONADO,Hub Quilicura,Paquete recibido para servicio same day
+LR-2026-007334,2026-09-16 14:30,EN_HUB,Hub Quilicura,Sin asignacion de ruta, volumen de clasificacion sobre capacidad
+LR-2026-007334,2026-09-17 09:00,EN_HUB,Hub Quilicura,Sin asignacion de ruta, flota comprometida en rutas prioritarias
+LR-2026-007334,2026-09-18 09:00,EN_HUB,Hub Quilicura,Sin asignacion de ruta, se solicita apoyo de red freelance
+LR-2026-007334,2026-09-19 09:00,EN_HUB,Hub Quilicura,Sin asignacion de ruta, caso pendiente de escalamiento
+LR-2026-008455,2026-09-14 18:00,RECEPCIONADO,Hub San Bernardo,Paquete recibido desde bodega del retailer
+LR-2026-008455,2026-09-17 08:20,EN_RUTA,Ruta R-215,Salida de hub
+LR-2026-008455,2026-09-17 18:40,RETORNO_A_HUB,Hub San Bernardo,Ruta incompleta por congestion en Avenida Grecia
+LR-2026-008455,2026-09-18 08:15,EN_RUTA,Ruta R-215,Reasignado a ruta del dia siguiente
+LR-2026-008455,2026-09-18 12:05,ENTREGADO,Nunoa,Recibido por el consumidor, un dia despues de la fecha promesa
+LR-2026-009011,2026-09-12 17:10,RECEPCIONADO,Hub Pudahuel,Paquete recibido desde bodega del retailer
+LR-2026-009011,2026-09-13 06:40,CLASIFICADO,Hub Pudahuel,Asignado a ruta R-342
+LR-2026-009011,2026-09-13 08:15,EN_RUTA,Ruta R-342,Salida de hub
+LR-2026-009011,2026-09-13 20:30,SIN_CONFIRMACION,Ruta R-342,Paquete no retorna a hub ni registra entrega
+LR-2026-009011,2026-09-16 10:00,INCIDENTE,Hub Pudahuel,Busqueda interna sin resultado, paquete no localizable
+LR-2026-005294,2026-09-12 18:30,RECEPCIONADO,Hub San Bernardo,Paquete recibido desde bodega del retailer
+LR-2026-005294,2026-09-16 09:10,EN_RUTA,Ruta R-207,Salida de hub
+LR-2026-005294,2026-09-16 16:50,INTENTO_FALLIDO,La Pintana,Conserjeria no autoriza acceso sin coordinacion previa
+LR-2026-006152,2026-09-18 19:40,RECEPCIONADO,Hub Pudahuel,Paquete recibido desde bodega del retailer
+LR-2026-006152,2026-09-19 14:20,INTENTO_FALLIDO,Renca,Primer intento, cliente ausente
+LR-2026-006152,2026-09-20 15:05,INTENTO_FALLIDO,Renca,Segundo intento, cliente ausente
+LR-2026-006152,2026-09-22 11:30,INTENTO_FALLIDO,Renca,Tercer intento, cliente ausente
+LR-2026-010118,2026-09-12 17:00,RECEPCIONADO,Hub Quilicura,Paquete recibido desde bodega del retailer
+LR-2026-010118,2026-09-15 14:10,INTENTO_FALLIDO,Conchali,Primer intento, cliente ausente
+LR-2026-010118,2026-09-17 15:30,INTENTO_FALLIDO,Conchali,Segundo intento, cliente ausente
+LR-2026-010118,2026-09-19 16:00,INTENTO_FALLIDO,Conchali,Tercer intento, cliente ausente
+LR-2026-010118,2026-09-20 09:30,DEVUELTO_ORIGEN,Hub Quilicura,Devolucion al retailer tras agotar intentos permitidos
