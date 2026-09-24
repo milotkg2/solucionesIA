@@ -47,14 +47,17 @@ class ParametrosRAG:
 class ConfigModelos:
     """Proveedores y modelos configurados por variables de entorno."""
 
-    proveedor_llm: str = os.getenv("LLM_PROVEEDOR", "gemini").lower()
-    modelo_gemini: str = os.getenv("GEMINI_MODELO", "gemini-2.5-flash")
+    # groq = principal (capa gratuita, rapido). gemini y ollama quedan como respaldo.
+    proveedor_llm: str = os.getenv("LLM_PROVEEDOR", "groq").lower()
+    modelo_groq: str = os.getenv("GROQ_MODELO", "llama-3.3-70b-versatile")
+    modelo_gemini: str = os.getenv("GEMINI_MODELO", "gemini-3.6-flash")
     modelo_ollama: str = os.getenv("OLLAMA_MODELO", "llama3.2:3b")
     proveedor_embeddings: str = os.getenv("EMBEDDINGS_PROVEEDOR", "ollama").lower()
     modelo_embeddings_ollama: str = os.getenv("EMBEDDINGS_MODELO", "nomic-embed-text")
     url_ollama: str = os.getenv("OLLAMA_URL", "http://localhost:11434")
     temperatura: float = float(os.getenv("LLM_TEMPERATURA", "0.1"))
     timeout_segundos: float = float(os.getenv("LLM_TIMEOUT", "900"))
+    clave_groq: str | None = field(default_factory=lambda: os.getenv("GROQ_API_KEY"))
     clave_gemini: str | None = field(default_factory=lambda: os.getenv("GOOGLE_API_KEY"))
 
 
@@ -69,15 +72,32 @@ class ConfiguracionInvalida(RuntimeError):
 def construir_llm(proveedor: str | None = None):
     """Devuelve el LLM segun el proveedor configurado.
 
-    Proveedores soportados: 'gemini' (nube, capa gratuita) y 'ollama' (local, sin red).
+    Proveedores soportados:
+    - groq: nube, capa gratuita (motor principal tras el bloqueo de Gemini en la cuenta)
+    - gemini: nube, capa gratuita (respaldo; puede fallar por permisos de cuenta/region)
+    - ollama: local, sin red (respaldo offline; lento en equipos sin GPU)
     """
     proveedor = (proveedor or CONFIG_MODELOS.proveedor_llm).lower()
+
+    if proveedor == "groq":
+        if not CONFIG_MODELOS.clave_groq:
+            raise ConfiguracionInvalida(
+                "Falta GROQ_API_KEY en el archivo .env. Obten una clave gratuita en "
+                "https://console.groq.com/keys (sin tarjeta de credito)."
+            )
+        from llama_index.llms.groq import Groq
+
+        return Groq(
+            model=CONFIG_MODELOS.modelo_groq,
+            api_key=CONFIG_MODELOS.clave_groq,
+            temperature=CONFIG_MODELOS.temperatura,
+        )
 
     if proveedor == "gemini":
         if not CONFIG_MODELOS.clave_gemini:
             raise ConfiguracionInvalida(
                 "Falta GOOGLE_API_KEY en el archivo .env. Obten una clave gratuita en "
-                "https://aistudio.google.com/apikey o cambia a LLM_PROVEEDOR=ollama."
+                "https://aistudio.google.com/apikey o cambia a LLM_PROVEEDOR=groq."
             )
         from llama_index.llms.google_genai import GoogleGenAI
 
@@ -98,7 +118,7 @@ def construir_llm(proveedor: str | None = None):
         )
 
     raise ConfiguracionInvalida(
-        f"Proveedor de LLM no soportado: '{proveedor}'. Usa 'gemini' u 'ollama'."
+        f"Proveedor de LLM no soportado: '{proveedor}'. Usa 'groq', 'gemini' u 'ollama'."
     )
 
 
