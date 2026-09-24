@@ -1,0 +1,12 @@
+# Pipeline RAG y agente
+llama-index-core>=0.12.0
+llama-index-llms-ollama>=0.5.0
+llama-index-embeddings-ollama>=0.5.0
+llama-index-retrievers-bm25>=0.5.0
+
+# Interfaz de demostracion
+streamlit>=1.40.0
+
+# Datos y configuracion
+pandas>=2.2.0
+python-dotenv>=1.0.0
