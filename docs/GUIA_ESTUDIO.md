@@ -17,6 +17,7 @@ estudiar y para poder defender el proyecto en la presentación del 26/09.
 
 | Si quieres... | Ve a la sección |
 |---|---|
+| Instalar el proyecto y probarlo en tu PC (Eder / Camilo) | 11 |
 | Entender el vocabulario (LLM, RAG, embedding, chunk) | 2 |
 | Entender qué problema resolvemos | 3 |
 | Entender la arquitectura completa | 4 |
@@ -46,7 +47,7 @@ que la respalda.
 
 | Término | Qué es | Cómo aparece en nuestro proyecto |
 |---|---|---|
-| **LLM** (Large Language Model) | Modelo de lenguaje entrenado para predecir texto. Sabe redactar y razonar sobre lenguaje, pero **no conoce** los datos privados de la empresa. | Gemini 2.5 Flash (nube) o Llama 3.2 3B (local). Redacta el diagnóstico y el mensaje al cliente. |
+| **LLM** (Large Language Model) | Modelo de lenguaje entrenado para predecir texto. Sabe redactar y razonar sobre lenguaje, pero **no conoce** los datos privados de la empresa. | Groq `openai/gpt-oss-120b` (principal). Gemini y Ollama como respaldo. Redacta el diagnóstico y el mensaje al cliente. |
 | **Prompt** | Instrucción de texto que se le entrega al LLM. Define rol, contexto, tarea, formato y restricciones. | Carpeta `prompts/`. Es un componente de ingeniería, no un texto improvisado. |
 | **Alucinación** | Cuando el LLM afirma algo falso con tono seguro (inventa un plazo, una política, una compensación). | Es **el riesgo central** del proyecto. Lo combatimos con RAG y con cálculos deterministas. |
 | **RAG** (Retrieval-Augmented Generation) | Técnica que consiste en **recuperar** fragmentos de documentos relevantes y **entregárselos al LLM** dentro del prompt, para que responda basándose en ellos y no en su memoria. | Todo el módulo `src/retrieval.py` + `src/ingest.py`. |
@@ -59,7 +60,7 @@ que la respalda.
 | **RRF** (Reciprocal Rank Fusion) | Fórmula para combinar dos listas de resultados usando la **posición** en cada lista, no el puntaje crudo. | Implementada a mano en `src/retrieval.py`. |
 | **top-k** | Cuántos fragmentos se recuperan. | 6 densos + 6 léxicos → 5 finales. |
 | **Agente** | Sistema que no solo genera texto: **decide qué pasos ejecutar** y usa **herramientas** (consultar una base de datos, buscar en documentos) para cumplir un objetivo. | `src/agent.py`: detecta el envío, llama la herramienta de tracking, calcula hechos, consulta el RAG y recién entonces genera. |
-| **Herramienta** (tool) | Función que el agente puede invocar para obtener información o actuar. | `consultar_envio()` sobre el CSV. |
+| **Herramienta** (tool) | Función que el agente puede invocar para obtener información o actuar. | `consultar_envio()` en `src/tracking.py` sobre el CSV. |
 | **SLA** (Service Level Agreement) | Acuerdo de nivel de servicio: el plazo y la calidad comprometidos por contrato. | `data/internos/matriz_sla_retailers.md`. |
 | **OTD** (On Time Delivery) | % de envíos entregados a tiempo. Es el KPI que mide el problema. | Columna de cumplimiento mínimo en la matriz SLA. |
 
@@ -151,11 +152,11 @@ acción y borrador de respuesta con **100% de trazabilidad a la fuente**.
                     └──────────┬───────────┘
                                ▼
                     ┌──────────────────────┐        ┌─────────────────────┐
-                    │  CAPA DE LLM         │◄──────►│ Gemini 2.5 Flash    │
+                    │  CAPA DE LLM         │◄──────►│ Groq gpt-oss-120b   │
                     │  src/config.py       │        │ (nube, principal)   │
                     │  intercambiable      │        ├─────────────────────┤
-                    │                      │◄──────►│ Llama 3.2 3B        │
-                    └──────────┬───────────┘        │ (Ollama, respaldo)  │
+                    │                      │◄──────►│ Gemini / Ollama     │
+                    └──────────┬───────────┘        │ (respaldos)         │
                                ▼                    └─────────────────────┘
                     ┌──────────────────────────────────────────┐
                     │  RESPUESTA: diagnóstico + acción         │
@@ -193,51 +194,51 @@ Esta inversión de responsabilidades es la decisión de diseño más importante 
 Esta sección es la más importante para la defensa, porque el 10% de la nota corresponde a
 *Fundamentación de decisiones de diseño* y otro 15% a *Arquitectura*.
 
-### 5.1 Motor de LLM: Gemini en la nube como principal, Ollama local como respaldo
+### 5.1 Motor de LLM: Groq en la nube como principal; Gemini y Ollama como respaldo
 
 **Qué hicimos:** una capa de abstracción (`construir_llm()` en `src/config.py`) que devuelve
-el LLM según la variable de entorno `LLM_PROVEEDOR`, con dos implementaciones: `gemini` y
-`ollama`.
+el LLM según la variable de entorno `LLM_PROVEEDOR`. Proveedores soportados: `groq` (principal),
+`gemini` y `ollama` (respaldos). El modelo actual por defecto es `openai/gpt-oss-120b` vía Groq.
 
-**Por qué, con evidencia medida en el equipo de desarrollo:**
+**Por qué descartamos Ollama como motor principal (evidencia medida):**
 
-Hardware disponible: Intel Core i5-7400 (4 núcleos), 8 GB de RAM, Radeon RX 570 (no utilizable
-por Ollama en Windows, por lo que la inferencia es 100% CPU).
+Hardware de desarrollo: Intel Core i5-7400 (4 núcleos), 8 GB de RAM, Radeon RX 570 (no utilizable
+por Ollama en Windows → inferencia 100% CPU).
 
 | Prueba realizada | Resultado medido |
 |---|---|
-| Llama 3.1 8B, pregunta corta sin contexto | **284,6 segundos** |
-| Llama 3.2 3B, con contexto RAG de ~5.000 caracteres | **211,9 segundos** |
-| Generación de un embedding con `nomic-embed-text` (modelo cargado) | **~1 segundo** |
+| Llama 3.1 8B, pregunta corta sin contexto (Ollama) | **284,6 segundos** |
+| Llama 3.2 3B, con contexto RAG de ~5.000 caracteres (Ollama) | **211,9 segundos** |
+| Groq `openai/gpt-oss-120b`, pregunta corta | **~1–2 segundos** |
+| Embedding `nomic-embed-text` (modelo cargado) | **~1 segundo** |
 | Indexación completa del corpus (43 fragmentos) | **15 segundos** |
 
-Además de la latencia, el modelo de 3B **falló en la calidad del razonamiento**: al preguntarle
-por un envío con 2 intentos fallidos por cliente ausente, respondió que correspondía
-"compensación obligatoria", lo cual **contradice** el catálogo interno (motivo M02 es
-responsabilidad del consumidor y no admite compensación).
+Además, el modelo local de 3B **falló en calidad**: ante un caso de cliente ausente (M02)
+inventó una "compensación obligatoria", contradiciendo el catálogo interno.
 
-**Conclusión fundamentada:** un modelo local pequeño en este hardware es inviable por dos
-razones independientes: (a) 3,5 minutos por consulta hace imposible una demostración en vivo
-de 10 minutos, y (b) su capacidad de razonamiento no alcanza para aplicar correctamente reglas
-de negocio condicionales. Por eso el motor principal es un modelo en la nube de capa gratuita.
+**Por qué no quedó Gemini como principal:** la cuenta de Google AI Studio del equipo autentica
+y lista modelos, pero al generar responde `403 PERMISSION_DENIED` en dos proyectos distintos
+(bloqueo a nivel de cuenta/región, no de clave mal escrita). Por eso se migró a Groq.
 
-**Por qué conservamos Ollama en vez de borrarlo:** queda como respaldo verificable ante fallas
-de red o agotamiento de cuota durante la presentación, y demuestra que la arquitectura no está
-acoplada a un proveedor. Es una decisión de diseño, no código muerto.
+**Por qué conservamos Gemini y Ollama en el código:** demuestran que la arquitectura no está
+acoplada a un proveedor. Cambiar el motor es una variable de entorno, no un rediseño.
+
+**Regla del equipo sobre claves:** cada integrante usa **su propia** `GROQ_API_KEY` en un
+archivo `.env` local. El `.env` **no se versiona** (repo público).
 
 **Alternativas descartadas:**
 
 | Alternativa | Por qué se descartó |
 |---|---|
-| Solo Ollama local | Latencia y calidad insuficientes (evidencia arriba) |
-| OpenAI / GPT | Requiere tarjeta de crédito; no aporta nada que Gemini gratuito no cubra para este caso |
-| Groq | Viable y rápido, pero Gemini ofrece mejor manejo del español y una sola credencial para todo |
-| Ajuste fino (fine-tuning) de un modelo propio | Fuera de alcance: requiere dataset de entrenamiento, GPU y tiempo. Además **RAG es la técnica correcta** cuando el conocimiento cambia (las políticas se actualizan): no hay que reentrenar nada, solo reindexar. |
+| Solo Ollama local | Latencia (~3,5 min) y calidad insuficientes |
+| Gemini como principal | Bloqueo 403 en la cuenta del equipo |
+| OpenAI / GPT de pago | Requiere tarjeta; Groq gratuito cubre la demo |
+| Ajuste fino (fine-tuning) | Fuera de alcance; además RAG es la técnica correcta cuando las políticas cambian |
 
 ### 5.2 Framework: LlamaIndex
 
 **Por qué:** está especializado precisamente en la etapa que nos interesa (ingesta, indexación
-y recuperación), trae los conectores de Ollama, Gemini y BM25 como módulos independientes, y
+y recuperación), trae los conectores de Groq, Ollama, Gemini y BM25 como módulos independientes, y
 maneja los metadatos por fragmento, que es lo que nos permite citar documento y sección.
 
 **Alternativas descartadas:**
@@ -459,7 +460,7 @@ SolucionesIA-EV1/
 │   ├── config.py                 Rutas, parámetros y FÁBRICAS de LLM y embeddings
 │   ├── ingest.py                 Carga, segmenta, embebe y persiste el índice
 │   ├── retrieval.py              Recuperación híbrida + fusión RRF + formato de citas
-│   ├── tracking.py               (pendiente) Consulta determinista del CSV y cálculo de hechos
+│   ├── tracking.py               Consulta determinista del CSV y cálculo de hechos
 │   ├── prompts.py                (pendiente) Carga y ensamblado de prompts
 │   ├── agent.py                  (pendiente) Orquestación completa
 │   ├── app.py                    (pendiente) Interfaz Streamlit
@@ -481,7 +482,7 @@ SolucionesIA-EV1/
 
 | Archivo | Función | Qué hace |
 |---|---|---|
-| `config.py` | `construir_llm()` | Devuelve Gemini u Ollama según `.env`. Es la capa de abstracción. |
+| `config.py` | `construir_llm()` | Devuelve Groq, Gemini u Ollama según `.env`. Es la capa de abstracción. |
 | `config.py` | `construir_embeddings()` | Devuelve el modelo de embeddings local. |
 | `ingest.py` | `cargar_documentos()` | Lee los `.md`, extrae los metadatos de la cabecera y marca interna/externa. |
 | `ingest.py` | `segmentar()` | Corte en dos etapas y asignación de la sección para citar. |
@@ -489,22 +490,27 @@ SolucionesIA-EV1/
 | `retrieval.py` | `RecuperadorHibrido.recuperar()` | Lanza las dos búsquedas y devuelve los fragmentos fusionados. |
 | `retrieval.py` | `_fusionar()` | Implementa la fórmula RRF. |
 | `retrieval.py` | `formatear_contexto()` | Arma el bloque `[F1]...[Fn]` que se inyecta en el prompt. |
+| `tracking.py` | `detectar_codigo()` | Extrae `LR-2026-...` del texto del operador. |
+| `tracking.py` | `consultar_envio()` | Busca el CSV por clave exacta y calcula retraso, tramo y responsabilidad. |
+| `tracking.py` | `formatear_hechos()` | Bloque de hechos listo para el prompt. |
 
 ### Tecnologías instaladas y para qué sirve cada una
 
-| Tecnología | Versión | Rol en el proyecto |
+| Tecnología | Versión / modelo | Rol en el proyecto |
 |---|---|---|
 | Python | 3.13.4 | Lenguaje base |
 | LlamaIndex Core | 0.14.25 | Framework de ingesta, indexación y recuperación |
-| `llama-index-llms-google-genai` | 0.11.2 | Conector al LLM Gemini |
-| `llama-index-llms-ollama` | 0.11.0 | Conector al LLM local (respaldo) |
+| `llama-index-llms-groq` | 0.6.1 | Conector al LLM principal (Groq) |
+| `llama-index-llms-google-genai` | 0.11.2 | Conector Gemini (respaldo) |
+| `llama-index-llms-ollama` | 0.11.0 | Conector LLM local (respaldo) |
 | `llama-index-embeddings-ollama` | 0.10.0 | Conector de embeddings locales |
 | `llama-index-retrievers-bm25` | 0.8.0 | Recuperador léxico BM25 |
 | `bm25s` | 0.3.11 | Implementación eficiente de BM25 |
-| `PyStemmer` | 2.2.0.3 | Reducción de palabras a su raíz, **con stemmer en español** |
-| Ollama | 0.32.1 | Servidor local de modelos (embeddings y LLM de respaldo) |
-| `nomic-embed-text` | — | Modelo de embeddings, 768 dimensiones |
-| Streamlit | 1.64.0 | Interfaz web de la demostración |
+| `PyStemmer` | 2.2.0.3 | Stemmer en **español** para BM25 |
+| Ollama | 0.32.1 | Servidor local (embeddings + LLM de respaldo) |
+| `nomic-embed-text` | — | Embeddings, 768 dimensiones |
+| Groq `openai/gpt-oss-120b` | — | LLM principal (~1–2 s por consulta) |
+| Streamlit | 1.64.0 | Interfaz web de la demostración (pendiente de cablear) |
 | pandas | 3.0.6 | Consulta determinista de los CSV |
 | `python-dotenv` | 1.2.3 | Carga de configuración desde `.env` |
 
@@ -521,22 +527,24 @@ Nota sobre PyStemmer: configurar el stemmer en **español** importa. Sin él, BM
 |---|---|
 | Decisiones de stack fundamentadas | Sección 5, con mediciones propias |
 | 6 documentos de fuentes (4 internas + 2 externas) | `data/internos/`, `data/externos/` |
-| 2 datasets estructurados (40 envíos, 43 eventos) | `envios.csv`, `eventos_tracking.csv` |
-| Capa de abstracción de LLM y embeddings | `src/config.py` |
+| 2 datasets estructurados (40 envíos, eventos de tracking) | `envios.csv`, `eventos_tracking.csv` |
+| Capa de abstracción de LLM y embeddings | `src/config.py` (groq / gemini / ollama) |
 | Pipeline de ingesta e indexación | 43 fragmentos generados en 15 s |
 | Recuperación híbrida con RRF | Probada con consulta por código y con paráfrasis |
 | Citas precisas a documento y sección | Corregido y verificado |
+| Herramienta de tracking determinista | `src/tracking.py` — retraso, tramo y responsabilidad en código |
+| LLM Groq operativo | ~1–2 s por consulta con `openai/gpt-oss-120b` |
+| README con pasos de instalación | Raíz del repo, sección “Cómo ejecutar” |
 
 ### Pendiente
 
-1. `src/tracking.py` — herramienta de consulta determinista y cálculo de hechos.
-2. `prompts/` — los prompts y su justificación escrita.
-3. `src/agent.py` — orquestación completa.
-4. `src/app.py` — interfaz Streamlit.
-5. `src/evaluar.py` — ejecución de los 5 escenarios y captura de evidencias.
-6. Diagrama de arquitectura como imagen.
-7. README ejecutable, documentación técnica e informe.
-8. Obtener la clave de Gemini para poder ejecutar el extremo a extremo.
+1. `prompts/` — los prompts y su justificación escrita.
+2. `src/agent.py` — orquestación completa.
+3. `src/app.py` — interfaz Streamlit.
+4. `src/evaluar.py` — ejecución de los 5 escenarios y captura de evidencias.
+5. Diagrama de arquitectura como imagen.
+6. Documentación técnica e informe ≤ 5 páginas.
+7. Presentación / guion de defensa.
 
 ---
 
@@ -566,10 +574,11 @@ afirmación debe citar su fragmento, lo que permite verificarla.
 El prompt instruye a declarar que no hay respaldo documental y a escalar, en vez de responder
 por inferencia propia. Es preferible un "no lo sé, escale" que una política inventada.
 
-**¿Por qué Gemini y no un modelo local, si tenían Ollama instalado?**
-Mostrar las mediciones: 212 segundos por consulta y un error de razonamiento verificado. Y
-aclarar que Ollama sigue disponible como respaldo por configuración, porque la arquitectura
-desacopla el proveedor.
+**¿Por qué Groq y no un modelo local, si tenían Ollama instalado?**
+Mostrar las mediciones: 212 segundos por consulta en Ollama 3B y un error de razonamiento
+verificado (inventó una compensación). Groq responde en ~1–2 s. Ollama y Gemini siguen
+disponibles como respaldo por configuración, porque la arquitectura desacopla el proveedor.
+Gemini se descartó como principal por un 403 a nivel de cuenta, no por preferencia estética.
 
 **¿Cuáles son las limitaciones de su solución?**
 Índice de búsqueda exhaustiva (no escala a cientos de miles de fragmentos sin cambiar a un
@@ -589,14 +598,61 @@ fuente externa **cambia** el resultado del diagnóstico.
 | # | Actividad | Resultado |
 |---|---|---|
 | 1 | Clonado del repositorio y revisión de la documentación existente | Caso definido, sin código aún |
-| 2 | Inventario del entorno | Python 3.13.4, Ollama instalado con Llama 3.1 8B, sin dependencias |
-| 3 | Decisión de stack con el equipo | Ollama + LlamaIndex + Streamlit |
+| 2 | Inventario del entorno | Python 3.13.4, Ollama con Llama 3.1 8B, sin dependencias |
+| 3 | Decisión de stack con el equipo | LlamaIndex + Streamlit + embeddings Ollama |
 | 4 | Descarga de `nomic-embed-text` y creación del entorno virtual | Entorno aislado en `.venv` |
 | 5 | Instalación de dependencias | LlamaIndex 0.14.25 y BM25 operativos |
 | 6 | Medición de rendimiento del LLM local | 284 s (8B) y 212 s (3B) → inviable |
 | 7 | Verificación del hardware | i5-7400, 8 GB RAM, GPU no utilizable |
-| 8 | Replanteo del motor de LLM | Capa de abstracción: Gemini principal, Ollama respaldo |
-| 9 | Creación de las 6 fuentes documentales | 4 internas y 2 externas, con metadatos de citación |
-| 10 | Creación de los datasets estructurados | 40 envíos y 43 eventos, con 6 casos de escenario diseñados |
-| 11 | Implementación de `config.py`, `ingest.py` y `retrieval.py` | Índice de 43 fragmentos y recuperación híbrida funcionando |
-| 12 | Corrección de la asignación de secciones | Citas precisas a documento y sección |
+| 8 | Primer intento con Gemini | 403 PERMISSION_DENIED en dos proyectos |
+| 9 | Migración a Groq como motor principal | `openai/gpt-oss-120b` en ~1–2 s |
+| 10 | Creación de las 6 fuentes documentales | 4 internas y 2 externas, con metadatos de citación |
+| 11 | Creación de los datasets estructurados | 40 envíos + eventos de tracking |
+| 12 | Implementación de `config.py`, `ingest.py` y `retrieval.py` | Índice de 43 fragmentos y recuperación híbrida |
+| 13 | Corrección de la asignación de secciones | Citas precisas a documento y sección |
+| 14 | Implementación de `tracking.py` | Hechos (retraso, tramo, responsabilidad) en código |
+| 15 | README + esta guía actualizados para que Eder pueda probar | Pasos reproducibles sin compartir claves |
+
+---
+
+## 11. Cómo instalar y probar (para Eder / Camilo)
+
+> Resumen operativo. La versión canónica con comandos también está en el `README.md` de la raíz.
+
+### Regla de secretos
+
+- El repo es **público**.
+- Cada integrante crea **su propia** clave en [console.groq.com/keys](https://console.groq.com/keys).
+- Se copia `.env.example` → `.env` y se completa `GROQ_API_KEY`.
+- **Nunca** se hace `git add .env`.
+
+### Checklist rápido
+
+1. `git pull`
+2. Crear / activar `.venv` e instalar `requirements.txt`
+3. Crear `.env` desde `.env.example` con tu clave Groq
+4. `ollama serve` + `ollama pull nomic-embed-text`
+5. `python -m src.ingest --reconstruir`
+6. Probar:
+   - `python -m src.retrieval "cuantos reintentos permite el motivo M02"`
+   - `python -m src.tracking LR-2026-004182`
+   - `python -c "from src.config import construir_llm; print(construir_llm().complete('Di solo: OK'))"`
+
+### Qué esperar si todo está bien
+
+| Comando | Resultado esperado |
+|---|---|
+| `ingest` | Mensaje con **43 fragmentos** |
+| `retrieval` M02 | Primer resultado: `CAT-OPS-007 — M02 — Cliente ausente` |
+| `tracking` 004182 | 7 días de retraso, tramo `mas_de_5_dias`, responsable LogiRuta |
+| prueba Groq | Respuesta en ~1–2 segundos |
+
+### Problemas frecuentes
+
+| Síntoma | Qué revisar |
+|---|---|
+| `Falta GROQ_API_KEY` | Existe `.env` y la clave no está vacía |
+| Error de conexión a Ollama | `ollama serve` está corriendo; URL en `.env` = `http://localhost:11434` |
+| `model_not_found` en Groq | Usar `GROQ_MODELO=openai/gpt-oss-120b` (el catálogo gratuito cambió) |
+| CSV no abre / ParserError | Actualizar el repo (`git pull`): los CSV ya fueron corregidos con comillas |
+| Índice vacío o desactualizado | Volver a correr `python -m src.ingest --reconstruir` |
