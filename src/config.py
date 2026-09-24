@@ -49,7 +49,7 @@ class ConfigModelos:
 
     # groq = principal (capa gratuita, rapido). gemini y ollama quedan como respaldo.
     proveedor_llm: str = os.getenv("LLM_PROVEEDOR", "groq").lower()
-    modelo_groq: str = os.getenv("GROQ_MODELO", "llama-3.3-70b-versatile")
+    modelo_groq: str = os.getenv("GROQ_MODELO", "openai/gpt-oss-120b")
     modelo_gemini: str = os.getenv("GEMINI_MODELO", "gemini-3.6-flash")
     modelo_ollama: str = os.getenv("OLLAMA_MODELO", "llama3.2:3b")
     proveedor_embeddings: str = os.getenv("EMBEDDINGS_PROVEEDOR", "ollama").lower()
