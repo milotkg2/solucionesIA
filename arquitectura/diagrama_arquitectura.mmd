@@ -1,0 +1,37 @@
+%% Arquitectura de la solucion — LogiRuta SpA (ISY0101)
+%% Version resumida, para el informe y las diapositivas.
+%% La version con cada funcion rotulada esta en diagrama_detallado.mmd / .svg
+%% Verde = determinista (reproducible) · Morado = generativo (variable) · Azul = datos
+
+flowchart TB
+    UI["<b>ANALISTA → INTERFAZ</b> · src/app.py<br/><i>consulta en lenguaje natural + panel de evidencia</i>"]
+
+    DET["<b>1· HECHOS EN CODIGO</b> · src/tracking.py<br/>consulta por clave exacta sobre envios.csv<br/><b>dias de retraso · tramo · responsabilidad</b><br/><i>los CSV NO se indexan</i>"]
+
+    REC["<b>2· RECUPERACION HIBRIDA</b> · src/retrieval.py<br/>densa (embeddings) + lexica (BM25 español)<br/><b>fusion RRF · K=60</b><br/><i>consultas dirigidas por aspecto del caso</i>"]
+
+    FUENTES[("<b>6 FUENTES</b><br/>4 internas: SOP · SLA · POL · CAT<br/>2 externas: SERNAC · normativa<br/><i>43 fragmentos indexados</i>")]
+
+    GEN["<b>3· GENERACION</b> · src/config.py + prompts/<br/><b>Groq gpt-oss-120b</b><br/><i>recibe hechos ya calculados y fragmentos citables</i>"]
+
+    SALIDA["<b>RESPUESTA TRAZABLE</b><br/>diagnostico · accion operativa · mensaje al cliente · alertas<br/><i>cada afirmacion cita documento y seccion [F#]</i>"]
+
+    UI --> DET
+    DET -->|"hechos verificados"| REC
+    FUENTES -.->|"indice"| REC
+    REC -->|"fragmentos + citas"| GEN
+    DET -->|"<b>hechos: el LLM no los recalcula</b>"| GEN
+    GEN --> SALIDA
+    DET -.->|"<b>envio inexistente:<br/>no se llama al LLM</b>"| SALIDA
+
+    classDef determinista fill:#1b4332,stroke:#52b788,stroke-width:3px,color:#fff
+    classDef generativo fill:#4a1942,stroke:#c77dff,stroke-width:3px,color:#fff
+    classDef datos fill:#1d3557,stroke:#4895ef,stroke-width:2px,color:#fff
+    classDef salida fill:#5c3d00,stroke:#ffb703,stroke-width:3px,color:#fff
+    classDef ui fill:#2b2d42,stroke:#8d99ae,stroke-width:2px,color:#fff
+
+    class DET,REC determinista
+    class GEN generativo
+    class FUENTES datos
+    class SALIDA salida
+    class UI ui

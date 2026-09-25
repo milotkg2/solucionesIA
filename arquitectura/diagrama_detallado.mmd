@@ -1,0 +1,73 @@
+%% Arquitectura de la solucion — LogiRuta SpA (ISY0101)
+%% Cada caja rotula el archivo y la funcion real que la implementa, no una etiqueta generica.
+%% Verde = determinista (reproducible entre equipos) · Morado = generativo (variable) · Azul = datos
+%% Render: https://mermaid.live  o
+%%   npx @mermaid-js/mermaid-cli -i diagrama_arquitectura.mmd -o diagrama_arquitectura.png --scale 2
+
+flowchart TB
+    UI["<b>ANALISTA → INTERFAZ</b> · src/app.py<br/><i>consulta en lenguaje natural + panel de evidencia</i>"]
+    A1["<b>1·</b> detectar_codigo()<br/><i>src/agent.py</i>"]
+
+    subgraph TRACK["DETERMINISTA · src/tracking.py"]
+        direction LR
+        T1["<b>2·</b> consultar_envio()<br/><i>clave exacta</i>"]
+        CSV[("envios.csv<br/>eventos_tracking.csv<br/><i>NO se indexan</i>")]
+        T2["_clasificar_tramo()<br/><b>dias · tramo ·<br/>responsabilidad<br/>EN CODIGO</b>"]
+        T1 --> CSV --> T2
+    end
+
+    A2["<b>3·</b> construir_<br/>consultas_dirigidas()<br/><i>motivo · intentos · accion<br/>compensacion · SLA<br/>escalamiento · temporada<br/>normativa</i>"]
+
+    subgraph RAGBOX["RAG · src/retrieval.py"]
+        direction LR
+        DENSA["Densa<br/><i>embeddings</i><br/>top_k=6"]
+        BM25["BM25<br/><i>stemmer español</i><br/>top_k=6"]
+        RRF["<b>4·</b> _fusionar()<br/><b>RRF 1/(K+rank)</b><br/>K=60 · top_k=5"]
+        DENSA --> RRF
+        BM25 --> RRF
+    end
+
+    subgraph ORIGEN["FUENTES E INDICE"]
+        direction LR
+        INT["<b>Internas</b><br/>SOP-OPS-014<br/>SLA-COM-002<br/>POL-COM-003<br/>CAT-OPS-007"]
+        EXT["<b>Externas</b><br/>EXT-SERNAC-001<br/>EXT-NORM-002"]
+        SEG["segmentar()<br/><i>src/ingest.py</i><br/>1· encabezados<br/>2· 600/120"]
+        VS[("vectorstore<br/>43 fragmentos")]
+        INT --> SEG
+        EXT --> SEG
+        SEG --> VS
+    end
+
+    PR["<b>PROMPTS</b><br/>prompts/*.md<br/><i>8 reglas<br/>obligatorias</i>"]
+    ENS["<b>5·</b> Prompt<br/>ensamblado<br/><i>src/prompts.py</i><br/>hechos + [F1]…[Fn]"]
+
+    FAB["<b>6·</b> construir_llm() · src/config.py<br/><b>Groq gpt-oss-120b</b> (principal)<br/><i>Gemini · Ollama como respaldo, intercambiables por .env</i>"]
+
+    SALIDA["<b>RESPUESTA TRAZABLE</b><br/><i>se muestra en la interfaz</i><br/>diagnostico<br/>accion operativa<br/>mensaje al cliente<br/>alertas<br/><i>cada afirmacion<br/>cita [F#]</i>"]
+
+    UI --> A1
+    A1 -->|"hay codigo"| T1
+    A1 -->|"sin codigo"| DENSA
+    T2 -->|"HECHOS<br/>VERIFICADOS"| A2
+    A2 --> DENSA
+    A2 --> BM25
+    VS -.-> DENSA
+    VS -.-> BM25
+    RRF -->|"fragmentos<br/>+ cita"| ENS
+    T2 -->|"hechos ya<br/>calculados"| ENS
+    PR --> ENS
+    ENS --> FAB
+    FAB --> SALIDA
+    T2 -.->|"<b>envio inexistente:<br/>no se llama al LLM</b>"| SALIDA
+
+    classDef determinista fill:#1b4332,stroke:#52b788,stroke-width:2px,color:#fff
+    classDef generativo fill:#4a1942,stroke:#c77dff,stroke-width:2px,color:#fff
+    classDef datos fill:#1d3557,stroke:#4895ef,stroke-width:2px,color:#fff
+    classDef salida fill:#5c3d00,stroke:#ffb703,stroke-width:3px,color:#fff
+    classDef ui fill:#2b2d42,stroke:#8d99ae,stroke-width:2px,color:#fff
+
+    class A1,A2,T1,T2,DENSA,BM25,RRF,SEG determinista
+    class FAB generativo
+    class CSV,VS,INT,EXT,PR datos
+    class SALIDA salida
+    class UI,ENS ui
