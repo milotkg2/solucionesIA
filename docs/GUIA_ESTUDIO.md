@@ -461,12 +461,12 @@ SolucionesIA-EV1/
 │   ├── ingest.py                 Carga, segmenta, embebe y persiste el índice
 │   ├── retrieval.py              Recuperación híbrida + fusión RRF + formato de citas
 │   ├── tracking.py               Consulta determinista del CSV y cálculo de hechos
-│   ├── prompts.py                (pendiente) Carga y ensamblado de prompts
+│   ├── prompts.py                Carga y ensamblado de prompts
 │   ├── agent.py                  (pendiente) Orquestación completa
 │   ├── app.py                    (pendiente) Interfaz Streamlit
 │   └── evaluar.py                (pendiente) Ejecuta los escenarios y guarda evidencias
 │
-├── prompts/                      (pendiente) Prompts + justificación de su diseño
+├── prompts/                      Prompts (sistema + 2 plantillas) + justificación en README
 ├── arquitectura/                 (pendiente) Diagrama de arquitectura
 ├── evidencias/                   (pendiente) Capturas y salidas de las pruebas
 ├── informe/                      (pendiente) Informe ≤ 5 páginas
@@ -535,16 +535,49 @@ Nota sobre PyStemmer: configurar el stemmer en **español** importa. Sin él, BM
 | Herramienta de tracking determinista | `src/tracking.py` — retraso, tramo y responsabilidad en código |
 | LLM Groq operativo | ~1–2 s por consulta con `openai/gpt-oss-120b` |
 | README con pasos de instalación | Raíz del repo, sección “Cómo ejecutar” |
+| Prompts v2 con justificación e iteración documentada | `prompts/README.md`, `evidencias/01_...` |
 
 ### Pendiente
 
-1. `prompts/` — los prompts y su justificación escrita.
-2. `src/agent.py` — orquestación completa.
-3. `src/app.py` — interfaz Streamlit.
-4. `src/evaluar.py` — ejecución de los 5 escenarios y captura de evidencias.
-5. Diagrama de arquitectura como imagen.
-6. Documentación técnica e informe ≤ 5 páginas.
-7. Presentación / guion de defensa.
+1. `src/agent.py` — orquestación completa.
+2. `src/app.py` — interfaz Streamlit.
+3. `src/evaluar.py` — ejecución de los 5 escenarios y captura de evidencias.
+4. Diagrama de arquitectura como imagen.
+5. Documentación técnica e informe ≤ 5 páginas.
+6. Presentación / guion de defensa.
+
+---
+
+## 8.1 Diseño de prompts (resumen para estudiar)
+
+**Tres archivos en `prompts/`:**
+
+| Archivo | Rol |
+|---|---|
+| `sistema_agente.md` | Rol + 8 reglas obligatorias. Va en todas las llamadas. |
+| `diagnostico_envio.md` | Plantilla cuando hay código de envío: hechos + fragmentos + 5 secciones de salida. |
+| `consulta_politicas.md` | Plantilla para preguntas generales sin envío. |
+
+**Estructura que hay que saber explicar:** rol → contexto verificado (hechos) → contexto
+recuperado (fragmentos `[F#]`) → tarea → formato fijo → restricciones.
+
+**Las 3 reglas más importantes para la defensa:**
+
+1. *Usar solo hechos y fragmentos* → es lo que convierte el RAG en garantía y no en sugerencia.
+2. *No recalcular los hechos* → el LLM redacta, el código calcula.
+3. *Citar `[F#]` en cada regla* → cada afirmación es auditable.
+
+**Por qué una sola llamada y no tres prompts encadenados:** coherencia entre diagnóstico,
+acción y mensaje; un tercio de la latencia y la cuota; las secciones fijas ya separan las salidas.
+
+**Evidencia de iteración (muy útil en la defensa):** la v1 acertó en lo central (no ofreció
+compensación en un caso M02, que era el error del modelo local), pero inventó un teléfono,
+listó una fuente no citada y no indicó los intentos restantes. Cada defecto generó un cambio
+concreto en la v2. Ver `evidencias/01_prueba_prompt_v1_caso_M02.md`.
+
+**Lección aprendida:** no todos los defectos se arreglan en el prompt. Los intentos restantes
+faltaban porque *la recuperación* no trajo la regla de intentos. Si el fragmento no llega, el
+mejor prompt no puede citarlo. Por eso el agente hace consultas dirigidas por aspecto.
 
 ---
 
@@ -612,6 +645,9 @@ fuente externa **cambia** el resultado del diagnóstico.
 | 13 | Corrección de la asignación de secciones | Citas precisas a documento y sección |
 | 14 | Implementación de `tracking.py` | Hechos (retraso, tramo, responsabilidad) en código |
 | 15 | README + esta guía actualizados para que Eder pueda probar | Pasos reproducibles sin compartir claves |
+| 16 | Diseño de prompts v1 + `src/prompts.py` | Sistema + 2 plantillas con marcadores |
+| 17 | Prueba v1 sobre caso M02 con Groq (8,9 s) | Acierta en compensación; 3 defectos detectados |
+| 18 | Prompts v2 | Corrige teléfono inventado, fuentes no citadas e intentos restantes |
 
 ---
 
