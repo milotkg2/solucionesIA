@@ -1,0 +1,315 @@
+[
+  {
+    "id": "ESC-01",
+    "titulo": "Retraso por congestion en temporada alta (M01)",
+    "consulta": "El cliente del envio LR-2026-004182 reclama que su pedido no ha llegado. Que le respondo y que corresponde hacer?",
+    "tipo": "diagnostico",
+    "checks_ok": 6,
+    "checks_total": 6,
+    "checks": [
+      {
+        "verificacion": "Incluye citas [F#] (objetivo O2)",
+        "cumple": true
+      },
+      {
+        "verificacion": "Incluye mensaje sugerido para el cliente",
+        "cumple": true
+      },
+      {
+        "verificacion": "Atribuye la responsabilidad a LogiRuta",
+        "cumple": true
+      },
+      {
+        "verificacion": "Escala a Jefe de Operaciones o Gerencia",
+        "cumple": true
+      },
+      {
+        "verificacion": "Aplica compensacion del tramo (reembolso o reposicion)",
+        "cumple": true
+      },
+      {
+        "verificacion": "Recupera la politica de compensaciones POL-COM-003",
+        "cumple": true
+      }
+    ],
+    "latencia_recuperacion_s": 4.93,
+    "latencia_llm_s": 6.47,
+    "latencia_total_s": 11.399999999999999,
+    "tiene_citas": true,
+    "fragmentos": [
+      "CAT-OPS-007 — M01 — Congestion vial o sobrecarga de ruta",
+      "SOP-OPS-014 — 6. Matriz de decision de accion operativa",
+      "POL-COM-003 — 2. Tabla de compensaciones al consumidor final",
+      "SLA-COM-002 — 4. Umbrales de incidente de SLA",
+      "SOP-OPS-014 — 7. Escalamiento",
+      "SLA-COM-002 — 6. Protocolo de peaks de demanda",
+      "EXT-NORM-002 — 2. Modificaciones relevantes para comercio electronico",
+      "CAT-OPS-007 — Tabla resumen de responsabilidad"
+    ],
+    "respuesta": "### 1. Diagnóstico\n- **Causa probable:** Congestión vial o sobrecarga de ruta (motivo M01) que provocó el retorno del vehículo al hub sin intento de entrega, debido al cierre de la Avenida Pajaritos [F1].  \n- **Responsable:** LogiRuta, según el catálogo de responsabilidad para M01 [F8].  \n- **Computa para SLA:** Sí (el hecho verifica “Computa para SLA: True”) [F1].  \n- **Intentos de entrega:** No se registraron intentos (campo “Intentos de entrega: 0”). No existe fragmento que indique cuántos intentos quedan, por lo que no se menciona.\n\n### 2. Acción operativa\n1. **Reprogramar la entrega** con prioridad alta y generar una nueva fecha estimada de entrega.  \n2. **Informar al cliente** la nueva fecha y ofrecer una disculpa formal.  \n3. **Registrar incidente de SLA** por incumplimiento grave (> 72 h) [F4].  \n4. **Escalar a N3 – Jefe de Operaciones** dentro de las 24 horas hábiles siguientes [F5].  \n5. **Gestionar la compensación** correspondiente al tramo “más de 5 días” : reposición o reembolso del producto con el retailer y reembolso del despacho [F3]; la aprobación debe ser firmada por la Gerencia Comercial [F3].\n\n- **Nivel de escalamiento:** N3 – Jefe de Operaciones, plazo máximo 24 h [F5].  \n- **Compensación que corresponde:** reposición o reembolso del producto + reembolso del despacho, aprobada por Gerencia Comercial [F3].\n\n### 3. Mensaje sugerido para el cliente\n> Estimado/a cliente, le pedimos disculpas por el retraso en la entrega de su pedido LR‑2026‑004182. Debido a una incidencia en la ruta, su envío será reprogramado y estimamos que podrá recibirlo el **[nueva fecha estimada]**. Agradecemos su comprensión y quedamos a su disposición por el canal de atención [canal de atencion] para cualquier consulta.\n\n### 4. Alertas\n- **Riesgo contractual:** El retraso de 7 días supera las 72 h, lo que genera un incidente grave de SLA con posible penalización económica y riesgo de reclamo ante SERNAC [F4].  \n- **Temporada alta:** El servicio ND no admite extensión de plazo en temporada alta y el retailer no informó una extensión al consumidor; por lo tanto, la fecha promesa original sigue vigente y el incumplimiento afecta el SLA [F6].  \n\n### 5. Fuentes utilizadas\n- **[F1]** CAT-OPS-007 – M01 – Congestión vial o sobrecarga de ruta.  \n- **[F2]** SOP-OPS-014 – Matriz de decisión de acción operativa.  \n- **[F3]** POL-COM-003 – Tabla de compensaciones al consumidor final.  \n- **[F4]** SLA-COM-002 – Umbrales de incidente de SLA.  \n- **[F5]** SOP-OPS-014 – Escalamiento.  \n- **[F6]** SLA-COM-002 – Protocolo de peaks de demanda (temporada alta).  \n- **[F8]** CAT-OPS-007 – Tabla resumen de responsabilidad.",
+    "error": null,
+    "archivo": "ESC-01.md"
+  },
+  {
+    "id": "ESC-02",
+    "titulo": "Cliente ausente con dos intentos fallidos (M02)",
+    "consulta": "El cliente del envio LR-2026-005271 reclama que no le ha llegado y pide compensacion. Que hago?",
+    "tipo": "diagnostico",
+    "checks_ok": 5,
+    "checks_total": 5,
+    "checks": [
+      {
+        "verificacion": "Incluye citas [F#] (objetivo O2)",
+        "cumple": true
+      },
+      {
+        "verificacion": "Incluye mensaje sugerido para el cliente",
+        "cumple": true
+      },
+      {
+        "verificacion": "Indica que no corresponde compensacion",
+        "cumple": true
+      },
+      {
+        "verificacion": "Indica el intento restante",
+        "cumple": true
+      },
+      {
+        "verificacion": "Recupera la regla de intentos (SOP-OPS-014 §4)",
+        "cumple": true
+      }
+    ],
+    "latencia_recuperacion_s": 2.85,
+    "latencia_llm_s": 5.99,
+    "latencia_total_s": 8.84,
+    "tiene_citas": true,
+    "fragmentos": [
+      "SLA-COM-002 — 5. Exclusiones de responsabilidad",
+      "SOP-OPS-014 — 4. Regla de intentos de entrega",
+      "SOP-OPS-014 — 6. Matriz de decision de accion operativa",
+      "SLA-COM-002 — 6. Protocolo de peaks de demanda",
+      "EXT-NORM-002 — 2. Modificaciones relevantes para comercio electronico",
+      "CAT-OPS-007 — M02 — Cliente ausente",
+      "SOP-OPS-014 — 3. Definiciones operativas",
+      "SLA-COM-002 — 1. Proposito"
+    ],
+    "respuesta": "### 1. Diagnóstico\n- **Causa probable del retraso:** ausencia del consumidor en la dirección indicada (motivo **M02**). Evidenciado por los dos intentos fallidos con observación “domicilio sin moradores” en el historial de tracking. **[F6]**  \n- **Responsable:** Consumidor (según catálogo de motivos). **[F6]**  \n- **¿Computa para SLA?:** No computa para SLA (campo “Computa para SLA: False”). **[hechos]**  \n- **Intentos de entrega restantes:** La regla de intentos para M02 permite **3 intentos**; se han realizado **2**, por lo que queda **1 intento** disponible. **[F2]**\n\n### 2. Acción operativa\n1. **Contactar al consumidor** a través del canal de atención para acordar una nueva ventana horaria de entrega (o ofrecer retiro en punto de conveniencia). **[F6]**  \n2. **Programar el tercer intento** de entrega dentro del rango de **24 a 48 horas hábiles** a partir de la confirmación del cliente. **[F2]**  \n3. **Actualizar el tracking** con el estado “PENDIENTE_REPROGRAMACION” y registrar la coordinación realizada.  \n4. **Monitorear** la ejecución del tercer intento; si falla, proceder según SOP‑OPS‑014 a “DEVUELTO_ORIGEN” y notificar al retailer dentro de 24 h. **[F2]**  \n\n- **Nivel de escalamiento:** No se requiere escalamiento en esta fase; solo se escalará a Jefe de Operaciones si el tercer intento también falla (regla de tres intentos). **[F2]**  \n- **Compensación:** No corresponde compensación porque la causa es atribuible al consumidor (motivo M02). **[F3]**, **[F6]**  \n- **Aprobación de compensación:** No aplica.\n\n### 3. Mensaje sugerido para el cliente\n> Estimado cliente, le informamos que hemos intentado entregar su pedido en dos oportunidades y no hemos podido localizarlo en su domicilio. Para poder concretar la entrega, le solicitamos coordinar una nueva ventana horaria o, si lo prefiere, retirar su pedido en el punto de conveniencia más cercano. Por favor, contáctenos a través del [canal de atención] para confirmar la fecha y hora que le resulte más conveniente. Agradecemos su comprensión.\n\n### 4. Alertas\n- **Riesgos contractuales / SERNAC:** No hay incumplimiento de SLA porque el retraso no computa para SLA y la causa es atribuible al consumidor. Sin embargo, se recomienda mantener una comunicación clara para evitar reclamos por falta de información.  \n- **Temporada alta:** La extensión de plazo está **válida**, ya que el retailer informó al consumidor del plazo extendido (campo “Plazo extendido informado al consumidor: SI”). **[F4]**  \n- **Sin alertas adicionales.**\n\n### 5. Fuentes utilizadas\n- **[F2]** SOP‑OPS‑014 – 4. Regla de intentos de entrega (tabla de intentos y responsable).  \n- **[F3]** SOP‑OPS‑014 – 6. Matriz de decisión de acción operativa (fila “Causa atribuible al consumidor”).  \n- **[F4]** SLA‑COM‑002 – 6. Protocolo de peaks de demanda (validación de extensión de plazo).  \n- **[F6]** CAT‑OPS‑007 – M02 — Cliente ausente (descripción, responsabilidad, compensación y acción correctiva).  \n- **Hechos verificados** del envío (código, motivo, intentos, etc.).",
+    "error": null,
+    "archivo": "ESC-02.md"
+  },
+  {
+    "id": "ESC-03",
+    "titulo": "Direccion incompleta (M03)",
+    "consulta": "Que hacemos con el envio LR-2026-006123? El transportista dice que no encuentra la direccion.",
+    "tipo": "diagnostico",
+    "checks_ok": 6,
+    "checks_total": 6,
+    "checks": [
+      {
+        "verificacion": "Incluye citas [F#] (objetivo O2)",
+        "cumple": true
+      },
+      {
+        "verificacion": "Incluye mensaje sugerido para el cliente",
+        "cumple": true
+      },
+      {
+        "verificacion": "Pide validar la direccion con el cliente",
+        "cumple": true
+      },
+      {
+        "verificacion": "Menciona el plazo de 48 horas",
+        "cumple": true
+      },
+      {
+        "verificacion": "Menciona devolucion al origen si no responde",
+        "cumple": true
+      },
+      {
+        "verificacion": "Indica que no corresponde compensacion",
+        "cumple": true
+      }
+    ],
+    "latencia_recuperacion_s": 2.87,
+    "latencia_llm_s": 4.92,
+    "latencia_total_s": 7.79,
+    "tiene_citas": true,
+    "fragmentos": [
+      "CAT-OPS-007 — M03 — Direccion incompleta o erronea",
+      "SOP-OPS-014 — 4. Regla de intentos de entrega",
+      "SOP-OPS-014 — 6. Matriz de decision de accion operativa",
+      "SLA-COM-002 — 5. Exclusiones de responsabilidad",
+      "SLA-COM-002 — 6. Protocolo de peaks de demanda",
+      "EXT-NORM-002 — 2. Modificaciones relevantes para comercio electronico",
+      "SOP-OPS-014 — 7. Escalamiento",
+      "EXT-NORM-002 — 4. Limite de uso en la solucion"
+    ],
+    "respuesta": "### 1. Diagnóstico\n- **Causa probable:** Dirección incompleta o errónea (motivo **M03**) – el tracking indica “Dirección sin número ni departamento, no es posible ubicar el domicilio” [F1].  \n- **Responsable:** Consumidor / Retailer (origen del dato) [F1].  \n- **Computa para SLA:** **No** (el envío está marcado como “Computa para SLA: False”) [F4].  \n- **Intentos de entrega realizados:** 1 intento (registro de `DIRECCION_OBSERVADA`). Según la regla de intentos para M03, se permiten **2 intentos** previa validación de la dirección [F2]; por lo tanto **queda 1 intento** pendiente [F2].\n\n### 2. Acción operativa\n1. **Contactar al consumidor** para validar la dirección (solicitar número y departamento) [F1][F3].  \n2. **Registrar la respuesta** y, si se corrige la dirección, **reprogramar la entrega** y ejecutar el **segundo intento** dentro de las 48 h hábiles posteriores a la validación [F2][F3].  \n3. Si **no hay respuesta en 48 h**, proceder a **devolución al origen (RTO)** y notificar al retailer [F3].  \n4. **Actualizar el tracking** con el nuevo estado y observaciones.  \n\n- **Nivel de escalamiento:** N1 – Mesa de Control, con plazo máximo de 4 horas hábiles para registrar la excepción y ejecutar la acción [F7].  \n- **Compensación:** No corresponde compensación alguna (motivo M03 no genera compensación) [F1][F3]; la aprobación la realiza el analista de Mesa de Control.\n\n### 3. Mensaje sugerido para el cliente\n> Estimado/a cliente, hemos intentado entregar su pedido pero la dirección registrada está incompleta (faltan número y/o departamento). Para poder reprogramar la entrega, le solicitamos amablemente que nos confirme los datos faltantes respondiendo a este mensaje o llamando al [canal de atención]. Agradecemos su colaboración y lamentamos cualquier inconveniente.\n\n### 4. Alertas\n- **Extensión de plazo:** El servicio ND **no admite extensión** de plazo en ninguna temporada, por lo que la información de “plazo extendido informado al consumidor: SI” no genera un plazo adicional válido [F5].  \n- **Riesgo contractual / SERNAC:** No hay riesgo de incumplimiento de SLA (M03 excluye SLA) y no se ha generado reclamo formal; por lo tanto, no se activa escalamiento N2/N3/N4 [F4][F7].  \n\n**Resultado:** Sin alertas adicionales.\n\n### 5. Fuentes utilizadas\n- **[F1]** CAT-OPS-007 – M03 – Dirección incompleta o errónea.  \n- **[F2]** SOP-OPS-014 – 4. Regla de intentos de entrega.  \n- **[F3]** SOP-OPS-014 – 6. Matriz de decisión de acción operativa.  \n- **[F4]** SLA-COM-002 – 5. Exclusiones de responsabilidad.  \n- **[F5]** SLA-COM-002 – 6. Protocolo de peaks de demanda.  \n- **[F7]** SOP-OPS-014 – 7. Escalamiento.",
+    "error": null,
+    "archivo": "ESC-03.md"
+  },
+  {
+    "id": "ESC-04",
+    "titulo": "Quiebre de capacidad del hub, retailer Tier 1 same day (M04)",
+    "consulta": "ElectroMax nos pregunta por el envio LR-2026-007334, era same day y sigue en el hub. Que corresponde?",
+    "tipo": "diagnostico",
+    "checks_ok": 6,
+    "checks_total": 6,
+    "checks": [
+      {
+        "verificacion": "Incluye citas [F#] (objetivo O2)",
+        "cumple": true
+      },
+      {
+        "verificacion": "Incluye mensaje sugerido para el cliente",
+        "cumple": true
+      },
+      {
+        "verificacion": "Atribuye la responsabilidad a LogiRuta",
+        "cumple": true
+      },
+      {
+        "verificacion": "Escala a Jefe de Operaciones o Gerencia",
+        "cumple": true
+      },
+      {
+        "verificacion": "Aplica compensacion",
+        "cumple": true
+      },
+      {
+        "verificacion": "Advierte riesgo de penalizacion contractual",
+        "cumple": true
+      }
+    ],
+    "latencia_recuperacion_s": 2.99,
+    "latencia_llm_s": 19.3,
+    "latencia_total_s": 22.29,
+    "tiene_citas": true,
+    "fragmentos": [
+      "CAT-OPS-007 — M04 — Quiebre de capacidad del hub",
+      "SOP-OPS-014 — 6. Matriz de decision de accion operativa",
+      "POL-COM-003 — 2. Tabla de compensaciones al consumidor final",
+      "SLA-COM-002 — 4. Umbrales de incidente de SLA",
+      "SOP-OPS-014 — 7. Escalamiento",
+      "SLA-COM-002 — 6. Protocolo de peaks de demanda",
+      "EXT-NORM-002 — 2. Modificaciones relevantes para comercio electronico",
+      "SLA-COM-002 — 5. Exclusiones de responsabilidad"
+    ],
+    "respuesta": "### 1. Diagnóstico\n- **Causa probable:** quiebre de capacidad del hub (motivo M04) que impidió la asignación de ruta al paquete, según el historial de tracking que muestra el estado `EN_HUB` sin asignación desde el 16 de sep. [**F1**]  \n- **Responsable:** LogiRuta (planificación de capacidad). [**F1**]  \n- **Computa para SLA:** sí, el motivo M04 se contabiliza como incumplimiento de SLA. [**F1**]  \n- **Intentos de entrega:** 0 intentos registrados; no existe fragmento que indique cuántos intentos quedan, por lo que no se especifica.  \n\n### 2. Acción operativa\n1. **Activar red de transportistas freelance y derivar la carga a un hub alternativo** para liberar la sobrecarga del hub Quilicura. [**F1**]  \n2. **Reprogramar la entrega con prioridad alta** y generar una nueva fecha estimada para el cliente. [**F2**]  \n3. **Registrar incidente de SLA** (nivel grave por retraso > 72 h). [**F4**]  \n4. **Escalar a N3 – Jefe de Operaciones** con plazo máximo de 24 horas hábiles. [**F5**]  \n5. **Aplicar compensación** correspondiente al tramo “más de 5 días” → gestión de reposición o reembolso del producto con el retailer y reembolso del despacho; la aprobación corresponde a la Gerencia Comercial. [**F3**]  \n6. **Comunicar al retailer** la situación y la compensación aplicada.  \n\n### 3. Mensaje sugerido para el cliente\n> Estimado cliente, le pedimos disculpas por el retraso en la entrega de su pedido. Estamos trabajando para reprogramar la entrega a la mayor brevedad posible y le mantendremos informado a través de nuestro [canal de atención]. Agradecemos su comprensión.  \n\n### 4. Alertas\n- **Riesgo contractual:** retraso de 7 días supera el umbral de 72 h, generando un incidente SLA de nivel grave y posible penalización económica según el contrato con el retailer. [**F4**]  \n- **Riesgo de reclamo SERNAC:** al tratarse de un incumplimiento de SLA, existe la posibilidad de que el consumidor presente reclamo ante SERNAC. [**F7**]  \n- **Temporada alta:** aunque la temporada es ALTA, los servicios SD no admiten extensión de plazo; por lo tanto, la fecha promesa original (16 sep) sigue vigente. [**F6**]  \n\n### 5. Fuentes utilizadas\n- **[F1]** CAT-OPS-007 – M04 – Quiebre de capacidad del hub.  \n- **[F2]** SOP-OPS-014 – Matriz de decisión de acción operativa.  \n- **[F3]** POL-COM-003 – Tabla de compensaciones al consumidor final.  \n- **[F4]** SLA-COM-002 – Umbrales de incidente de SLA.  \n- **[F5]** SOP-OPS-014 – Escalamiento.  \n- **[F6]** SLA-COM-002 – Protocolo de peaks de demanda (extensión de plazos).",
+    "error": null,
+    "archivo": "ESC-04.md"
+  },
+  {
+    "id": "ESC-05",
+    "titulo": "Temporada alta sin plazo extendido informado (fuente externa decisiva)",
+    "consulta": "DecoCasa dice que el envio LR-2026-008455 llego un dia tarde pero que en temporada alta el plazo se extiende. Tienen razon?",
+    "tipo": "diagnostico",
+    "checks_ok": 6,
+    "checks_total": 6,
+    "checks": [
+      {
+        "verificacion": "Incluye citas [F#] (objetivo O2)",
+        "cumple": true
+      },
+      {
+        "verificacion": "Incluye mensaje sugerido para el cliente",
+        "cumple": true
+      },
+      {
+        "verificacion": "Concluye que la extension no aplica por no haberse informado",
+        "cumple": true
+      },
+      {
+        "verificacion": "Recupera el protocolo de peaks (SLA-COM-002 §6)",
+        "cumple": true
+      },
+      {
+        "verificacion": "Recupera al menos una fuente externa (normativa)",
+        "cumple": true
+      },
+      {
+        "verificacion": "Tramo hasta 24 h: disculpa sin compensacion economica",
+        "cumple": true
+      }
+    ],
+    "latencia_recuperacion_s": 2.97,
+    "latencia_llm_s": 18.6,
+    "latencia_total_s": 21.57,
+    "tiene_citas": true,
+    "fragmentos": [
+      "CAT-OPS-007 — M01 — Congestion vial o sobrecarga de ruta",
+      "SOP-OPS-014 — 4. Regla de intentos de entrega",
+      "SOP-OPS-014 — 6. Matriz de decision de accion operativa",
+      "POL-COM-003 — 2. Tabla de compensaciones al consumidor final",
+      "SLA-COM-002 — 4. Umbrales de incidente de SLA",
+      "SLA-COM-002 — 6. Protocolo de peaks de demanda",
+      "EXT-NORM-002 — 2. Modificaciones relevantes para comercio electronico",
+      "CAT-OPS-007 — Tabla resumen de responsabilidad"
+    ],
+    "respuesta": "### 1. Diagnóstico\n- **Causa probable:** Congestión vial o sobrecarga de ruta (motivo **M01**) que obligó al vehículo a retornar al hub y reprogramar la entrega al día siguiente [F1].  \n- **Responsable:** LogiRuta, según el catálogo de responsabilidad para M01 [F8].  \n- **Computa para SLA:** Sí, el envío está marcado como “Computa para SLA: True” en los hechos verificados [Hechos].  \n- **Intentos de entrega:** Se registró **1 intento** (entrega exitosa el 18‑09). Para M01 la regla indica reprogramación automática al día hábil siguiente y no contempla intentos adicionales [F2].\n\n### 2. Acción operativa\n1. Registrar el incidente de SLA como **nivel Leve** (retraso ≤ 24 h) [F5].  \n2. Generar y enviar al cliente una **disculpa formal** y confirmar la fecha de entrega ya realizada [F4].  \n3. Actualizar el historial interno con la causa M01 y la compensación aplicada [F3].  \n4. No se requiere re‑intento ni re‑programación adicional porque la entrega ya se completó [F2].  \n\n- **Nivel de escalamiento:** No aplica escalamiento adicional (registro interno).  \n- **Compensación correspondiente:** Disculpa formal y confirmación de la fecha de entrega (sin compensación económica). Aprobación requerida por el **Analista de Mesa de Control** [F4].\n\n### 3. Mensaje sugerido para el cliente\n> Estimado cliente, le pedimos disculpas por la entrega de su pedido **LR‑2026‑008455** con un día de retraso. Su paquete ya fue entregado el 18 de septiembre. Agradecemos su comprensión y quedamos a su disposición para cualquier consulta a través de nuestro [canal de atención].\n\n### 4. Alertas\n- **Riesgo contractual / SLA:** El retraso de 1 día computa para el SLA y genera un incidente leve, pero no implica penalización económica [F5].  \n- **Temporada alta:** La extensión de plazo solo es válida si el retailer informó al consumidor con al menos 10 días de antelación. En este caso **no se informó** la extensión [Hechos] → la fecha promesa original se mantiene y el retraso es relevante para el SLA [F6].  \n- **Riesgo de reclamo SERNAC:** Al no haber comunicado previamente la extensión, existe la posibilidad de reclamo; la respuesta proactiva y la disculpa formal mitigan el riesgo.\n\n### 5. Fuentes utilizadas\n- **[F1]** CAT-OPS-007 – Motivo M01 (Congestión vial)  \n- **[F2]** SOP-OPS-014 – Regla de intentos de entrega para M01  \n- **[F3]** SOP-OPS-014 – Matriz de decisión de acción operativa  \n- **[F4]** POL-COM-003 – Tabla de compensaciones (tramo ≤ 24 h)  \n- **[F5]** SLA-COM-002 – Umbrales de incidente de SLA (nivel Leve)  \n- **[F6]** SLA-COM-002 – Protocolo de peaks de demanda (extensión de plazo)  \n- **[F8]** CAT-OPS-007 – Tabla resumen de responsabilidad (M01)",
+    "error": null,
+    "archivo": "ESC-05.md"
+  },
+  {
+    "id": "ESC-06",
+    "titulo": "Consulta general de politicas (sin envio)",
+    "consulta": "Cuantos intentos de entrega permite el procedimiento cuando el cliente esta ausente y corresponde compensacion?",
+    "tipo": "politicas",
+    "checks_ok": 3,
+    "checks_total": 3,
+    "checks": [
+      {
+        "verificacion": "Incluye citas [F#] (objetivo O2)",
+        "cumple": true
+      },
+      {
+        "verificacion": "Indica 3 intentos",
+        "cumple": true
+      },
+      {
+        "verificacion": "Indica que no corresponde compensacion",
+        "cumple": true
+      }
+    ],
+    "latencia_recuperacion_s": 2.18,
+    "latencia_llm_s": 10.25,
+    "latencia_total_s": 12.43,
+    "tiene_citas": true,
+    "fragmentos": [
+      "SOP-OPS-014 — 4. Regla de intentos de entrega",
+      "CAT-OPS-007 — M02 — Cliente ausente",
+      "SOP-OPS-014 — 8. Prohibiciones",
+      "SOP-OPS-014 — 6. Matriz de decision de accion operativa",
+      "SOP-OPS-014 — 5. Flujo obligatorio de atencion de una excepcion"
+    ],
+    "respuesta": "### Respuesta\n- El procedimiento permite **hasta 3 intentos de entrega** cuando el cliente está ausente (motivo M02) [F1].  \n- **No corresponde compensación** en este caso [F2].\n\n### Detalle aplicable\n- Los intentos deben espaciarse entre **24 y 48 horas hábiles** y son gestionados por el **Hub de origen** [F1].  \n- El motivo M02 se clasifica como **responsabilidad del consumidor**, por lo que no genera compensación automática [F2].  \n- Según la matriz de decisión, los motivos atribuibles al consumidor (M02, M03, M05) **no generan compensación** y se siguen los reintentos establecidos [F4].\n\n### Fuentes utilizadas\n- **[F1]** SOP-OPS-014 — 4. Regla de intentos de entrega.  \n- **[F2]** CAT-OPS-007 — M02 — Cliente ausente.  \n- **[F4]** SOP-OPS-014 — 6. Matriz de decisión de acción operativa.",
+    "error": null,
+    "archivo": "ESC-06.md"
+  },
+  {
+    "id": "ESC-07",
+    "titulo": "Codigo de envio inexistente (control de alucinacion)",
+    "consulta": "El cliente del envio LR-2026-999999 esta molesto porque no le llega. Que le digo?",
+    "tipo": "envio_no_encontrado",
+    "checks_ok": 2,
+    "checks_total": 2,
+    "checks": [
+      {
+        "verificacion": "Detecta que el envio no existe",
+        "cumple": true
+      },
+      {
+        "verificacion": "No llama al LLM",
+        "cumple": true
+      }
+    ],
+    "latencia_recuperacion_s": 0.0,
+    "latencia_llm_s": 0.0,
+    "latencia_total_s": 0.0,
+    "tiene_citas": false,
+    "fragmentos": [],
+    "respuesta": "No encontre el envio **LR-2026-999999** en los registros de tracking. Verifica el codigo con el cliente o el retailer antes de continuar. No se genero diagnostico para evitar una respuesta sin respaldo en datos.",
+    "error": null,
+    "archivo": "ESC-07.md"
+  }
+]

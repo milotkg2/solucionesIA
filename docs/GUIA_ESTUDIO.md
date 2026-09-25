@@ -365,11 +365,18 @@ decorativo, cada una cumple una función distinta:
 | EXT-SERNAC-001 (evidencia pública) | Externa | Magnitud y contexto del problema; riesgo de reclamo formal |
 | EXT-NORM-002 (normativa) | Externa | Que el plazo exigible es el informado al consumidor, y el límite de lo que el agente puede afirmar |
 
-**Caso donde la fuente externa cambia la respuesta:** el envío `LR-2026-008455` es de temporada
-alta con `plazo_extendido_informado = NO`. La matriz interna permite extender el plazo en
-temporada alta, **pero** solo si el retailer informó al consumidor. Como no lo informó, la
-norma externa obliga a mantener la fecha promesa original. Sin la fuente externa, el sistema
-habría concluido erróneamente que no hubo incumplimiento. Este ejemplo es oro para la defensa.
+**Caso de temporada alta (`LR-2026-008455`), explicado con precisión:** el envío tiene
+`plazo_extendido_informado = NO`. La matriz interna (SLA-COM-002 §6) permite extender el
+plazo en temporada alta **solo si** se informó al consumidor, y la normativa externa
+(EXT-NORM-002) es el fundamento de esa regla: el plazo exigible es el informado al comprar.
+
+Lo que muestra la evidencia (ESC-05): el agente concluye correctamente que la extensión no
+aplica, pero lo hace citando la **regla interna**, que ya incorpora el principio legal. La
+fuente externa se recupera (gracias al aspecto "normativa", que busca solo en fuentes
+externas), pero el modelo no la cita. La forma correcta de contarlo en la defensa es:
+*la política interna traduce la norma externa a una regla operativa; el sistema recupera
+ambas, y la externa respalda por qué la interna es exigible.* No hay que afirmar que sin la
+fuente externa el resultado cambiaría, porque la evidencia no lo demuestra.
 
 ### 5.8 Detalles menores pero que conviene poder explicar
 
@@ -409,10 +416,11 @@ intentos: 0    motivo: M01    temporada: ALTA    plazo extendido informado: NO
 - Motivo M01 → responsabilidad de LogiRuta → **computa para SLA**.
 - Servicio ND → **no admite extensión de plazo** en temporada alta.
 
-**Paso 4 — Recuperación RAG.** Con esos hechos se construyen las consultas de recuperación
-(no se usa la pregunta cruda del usuario, se usa una consulta enriquecida con el motivo, el
-servicio, el tier del retailer y el tramo de retraso). El recuperador híbrido devuelve
-fragmentos como:
+**Paso 4 — Recuperación RAG por aspectos.** Con esos hechos el agente construye **una
+consulta por aspecto del caso** (motivo, intentos, acción, compensación, SLA, escalamiento,
+temporada, normativa), no una sola consulta con la pregunta cruda del usuario. Toma el mejor
+fragmento nuevo de cada aspecto y completa hasta 8 fragmentos sin duplicados. El aspecto
+"normativa" busca solo en fuentes externas. El recuperador híbrido devuelve fragmentos como:
 
 - `CAT-OPS-007 — M01 — Congestión vial o sobrecarga de ruta`
 - `SOP-OPS-014 — 6. Matriz de decisión de acción operativa`
@@ -537,14 +545,46 @@ Nota sobre PyStemmer: configurar el stemmer en **español** importa. Sin él, BM
 | README con pasos de instalación | Raíz del repo, sección “Cómo ejecutar” |
 | Prompts v2 con justificación e iteración documentada | `prompts/README.md`, `evidencias/01_...` |
 
+| Agente orquestador | `src/agent.py` — tracking + consultas por aspecto + LLM |
+| 7 escenarios con verificación automática | `evidencias/escenarios/RESUMEN.md` — 34/34, latencia media 14,1 s |
+| Revisión humana de escenarios | `evidencias/escenarios/REVISION_HUMANA.md` — 2 defectos menores documentados |
+
 ### Pendiente
 
-1. `src/agent.py` — orquestación completa.
-2. `src/app.py` — interfaz Streamlit.
-3. `src/evaluar.py` — ejecución de los 5 escenarios y captura de evidencias.
-4. Diagrama de arquitectura como imagen.
-5. Documentación técnica e informe ≤ 5 páginas.
-6. Presentación / guion de defensa.
+1. `src/app.py` — interfaz Streamlit.
+2. Diagrama de arquitectura como imagen.
+3. Documentación técnica e informe ≤ 5 páginas.
+4. Presentación / guion de defensa.
+
+---
+
+## 8.2 El agente y la evaluación (resumen para estudiar)
+
+**Por qué consultas por aspecto:** con una sola consulta (la pregunta del usuario), la
+búsqueda no traía la regla de intentos (evidencia 01). Si el fragmento no llega al contexto,
+el prompt no puede citarlo. Separar la búsqueda por aspecto asegura que cada regla necesaria
+tenga su oportunidad de ser recuperada.
+
+**Guardas deterministas del agente (sin LLM):**
+
+- Código de envío inexistente → responde que no existe y **no llama al LLM** (ESC-07).
+- Si el motivo no computa para SLA → no busca umbrales de incidente ni escalamiento por
+  tramo, para no confundir al modelo (hallazgo de la evidencia 02).
+
+**Hallazgo que vale la pena contar:** en la evidencia 02 el agente clasificó un caso de
+cliente ausente como "incidente grave". Al revisar, el origen era una **ambigüedad real del
+SOP** (el escalamiento por días no distinguía quién causó el retraso). Se corrigió en tres
+capas: fuente, prompt y agente. Un RAG es tan consistente como sus documentos, y además sirve
+para detectar contradicciones en ellos.
+
+**Cómo se evalúa:** `python -m src.evaluar` ejecuta 7 escenarios. Cada uno tiene
+verificaciones que la respuesta debe cumplir según las políticas (por ejemplo, "no ofrece
+compensación" en M02). Resultado: **34/34 verificaciones, 6/6 respuestas con citas**.
+
+**Por qué además revisión humana:** las verificaciones por patrones no detectan si la cita
+respalda de verdad la afirmación. La revisión manual encontró dos defectos menores (una
+inferencia no respaldada en ESC-02 y una fuente externa recuperada pero no citada en ESC-05).
+Mostrar esto en la defensa demuestra criterio técnico, no debilidad.
 
 ---
 
@@ -613,11 +653,17 @@ verificado (inventó una compensación). Groq responde en ~1–2 s. Ollama y Gem
 disponibles como respaldo por configuración, porque la arquitectura desacopla el proveedor.
 Gemini se descartó como principal por un 403 a nivel de cuenta, no por preferencia estética.
 
+**¿Cómo saben que funciona?**
+Con 7 escenarios diseñados sobre casos reales del dataset, cada uno con verificaciones ligadas
+a las políticas (34/34 cumplidas) y revisión humana de cada respuesta. Mostrar
+`evidencias/escenarios/RESUMEN.md` y un escenario completo, por ejemplo ESC-02.
+
 **¿Cuáles son las limitaciones de su solución?**
-Índice de búsqueda exhaustiva (no escala a cientos de miles de fragmentos sin cambiar a un
-motor vectorial con indexación aproximada); los datos son simulados; no hay evaluación
-automática de la calidad de recuperación con métricas formales; depende de una API externa
-para la generación; y el sistema no emite calificaciones jurídicas, solo alerta riesgos.
+El modelo puede asignar una cita cercana a una inferencia no respaldada (ESC-02); un
+fragmento recuperado no siempre es citado (ESC-05); las verificaciones automáticas son
+heurísticas; el índice es de búsqueda exhaustiva (no escala a cientos de miles de fragmentos
+sin un motor vectorial con indexación aproximada); los datos son simulados; depende de una
+API externa para la generación; y el sistema no emite calificaciones jurídicas.
 
 **¿Qué rol cumple cada fuente externa?**
 La de SERNAC dimensiona el problema y el riesgo reputacional; la normativa fija que el plazo
@@ -648,6 +694,11 @@ fuente externa **cambia** el resultado del diagnóstico.
 | 16 | Diseño de prompts v1 + `src/prompts.py` | Sistema + 2 plantillas con marcadores |
 | 17 | Prueba v1 sobre caso M02 con Groq (8,9 s) | Acierta en compensación; 3 defectos detectados |
 | 18 | Prompts v2 | Corrige teléfono inventado, fuentes no citadas e intentos restantes |
+| 19 | `src/agent.py` con consultas por aspecto | Recupera la regla de intentos; queda 1 intento en M02 |
+| 20 | Hallazgo de ambigüedad en SOP-OPS-014 (evidencia 02) | Corrección en fuente, prompt y agente |
+| 21 | Aspecto "normativa" solo en fuentes externas | EXT-NORM-002 llega al contexto en ESC-05 |
+| 22 | `src/evaluar.py`, 7 escenarios | 34/34 verificaciones, latencia media 14,1 s |
+| 23 | Revisión humana | 2 defectos menores documentados como limitación |
 
 ---
 

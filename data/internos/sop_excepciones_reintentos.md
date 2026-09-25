@@ -59,6 +59,10 @@ Ninguna respuesta al cliente puede emitirse sin haber ejecutado los pasos 1 a 4.
 
 ## 6. Matriz de decision de accion operativa
 
+Las filas por tramo de retraso aplican cuando la causa es atribuible a LogiRuta. Si la causa
+es atribuible al consumidor (motivos M02, M03, M05), prevalece la fila de causa atribuible al
+consumidor, aunque la fecha promesa ya se haya superado.
+
 | Condicion detectada | Accion operativa obligatoria |
 |---|---|
 | Retraso menor o igual a 24 horas, causa externa (congestion, clima) | Reprogramar entrega e informar nueva fecha al cliente. No corresponde compensacion automatica. |
@@ -74,8 +78,12 @@ Ninguna respuesta al cliente puede emitirse sin haber ejecutado los pasos 1 a 4.
 | Nivel | Cuando se activa | Responsable | Plazo maximo |
 |---|---|---|---|
 | N1 — Mesa de Control | Toda excepcion registrada | Analista de turno | 4 horas habiles |
-| N2 — Jefe de Hub | Retraso mayor a 48 horas o quiebre de capacidad | Jefe de Hub | 8 horas habiles |
-| N3 — Jefe de Operaciones | Retraso mayor a 72 horas o riesgo de penalizacion contractual | Jefe de Operaciones | 24 horas habiles |
+| N2 — Jefe de Hub | Retraso mayor a 48 horas atribuible a LogiRuta, o quiebre de capacidad | Jefe de Hub | 8 horas habiles |
+| N3 — Jefe de Operaciones | Retraso mayor a 72 horas atribuible a LogiRuta, o riesgo de penalizacion contractual | Jefe de Operaciones | 24 horas habiles |
+
+Los retrasos atribuibles al consumidor (M02, M03, M05) no activan N2 ni N3 por tramo de
+retraso: se gestionan en N1 segun la regla de intentos de la seccion 4. Solo escalan a N4 si
+existe un reclamo formal ante SERNAC.
 | N4 — Gerencia Comercial | Reclamo formal ante SERNAC o riesgo de perdida de contrato | Gerente Comercial | 48 horas habiles |
 
 ## 8. Prohibiciones

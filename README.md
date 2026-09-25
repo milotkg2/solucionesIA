@@ -33,7 +33,10 @@
 | Fuentes internas / externas | Listas (6 documentos + 2 CSV) |
 | Pipeline RAG (ingest + retrieval) | Funcional |
 | Herramienta de tracking | Funcional |
-| Prompts + agente + UI | Pendiente |
+| Prompts (v2, con justificación) | Listos — ver [`prompts/README.md`](prompts/README.md) |
+| Agente orquestador | Funcional |
+| Escenarios de prueba | 7 escenarios, 34/34 verificaciones — ver [`evidencias/escenarios/RESUMEN.md`](evidencias/escenarios/RESUMEN.md) |
+| Interfaz Streamlit | Pendiente |
 | Informe (máx. 5 páginas) | Pendiente |
 | Presentación | Pendiente |
 
@@ -141,6 +144,23 @@ python -m src.tracking "El cliente del envio LR-2026-005271 reclama"
 ```powershell
 python -c "from src.config import construir_llm; print(construir_llm().complete('Di solo: OK'))"
 ```
+
+**D) Agente completo (tracking + RAG + LLM):**
+
+```powershell
+$env:PYTHONIOENCODING="utf-8"   # evita problemas de tildes en la consola de Windows
+python -m src.agent "El cliente del envio LR-2026-005271 reclama que no le ha llegado. Que hago?"
+python -m src.agent "Cuantos intentos de entrega permite el procedimiento si el cliente esta ausente?"
+```
+
+**E) Escenarios de prueba y evidencias (~3 minutos):**
+
+```powershell
+python -m src.evaluar                      # los 7 escenarios
+python -m src.evaluar --escenario ESC-02   # uno solo
+```
+
+Genera `evidencias/escenarios/ESC-0X.md`, `RESUMEN.md` y `resultados.json`.
 
 ### 7. Códigos de envío útiles para probar
 

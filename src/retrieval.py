@@ -46,6 +46,8 @@ class FragmentoRecuperado:
     rank_lexico: int | None = None
     score_vectorial: float | None = None
     score_lexico: float | None = None
+    # Aspecto del caso (motivo, intentos, compensacion...) cuya consulta dirigida lo recupero.
+    aspecto: str | None = None
 
     @property
     def referencia(self) -> str:
