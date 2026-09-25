@@ -506,7 +506,7 @@ SolucionesIA-EV1/
 
 | Tecnología | Versión / modelo | Rol en el proyecto |
 |---|---|---|
-| Python | 3.13.4 | Lenguaje base |
+| Python | 3.13 | Lenguaje base (no compatible con 3.14, ver sección 8) |
 | LlamaIndex Core | 0.14.25 | Framework de ingesta, indexación y recuperación |
 | `llama-index-llms-groq` | 0.6.1 | Conector al LLM principal (Groq) |
 | `llama-index-llms-google-genai` | 0.11.2 | Conector Gemini (respaldo) |
@@ -518,7 +518,7 @@ SolucionesIA-EV1/
 | Ollama | 0.32.1 | Servidor local (embeddings + LLM de respaldo) |
 | `nomic-embed-text` | — | Embeddings, 768 dimensiones |
 | Groq `openai/gpt-oss-120b` | — | LLM principal (~1–2 s por consulta) |
-| Streamlit | 1.64.0 | Interfaz web de la demostración (pendiente de cablear) |
+| Streamlit | 1.64.0 | Interfaz web de la demostración (`src/app.py`, operativa) |
 | pandas | 3.0.6 | Consulta determinista de los CSV |
 | `python-dotenv` | 1.2.3 | Carga de configuración desde `.env` |
 
@@ -544,17 +544,52 @@ Nota sobre PyStemmer: configurar el stemmer en **español** importa. Sin él, BM
 | LLM Groq operativo | ~1–2 s por consulta con `openai/gpt-oss-120b` |
 | README con pasos de instalación | Raíz del repo, sección “Cómo ejecutar” |
 | Prompts v2 con justificación e iteración documentada | `prompts/README.md`, `evidencias/01_...` |
-
 | Agente orquestador | `src/agent.py` — tracking + consultas por aspecto + LLM |
 | 7 escenarios con verificación automática | `evidencias/escenarios/RESUMEN.md` — 34/34, latencia media 14,1 s |
 | Revisión humana de escenarios | `evidencias/escenarios/REVISION_HUMANA.md` — 2 defectos menores documentados |
+| Interfaz Streamlit con panel de evidencia | `src/app.py` — probada en navegador el 25/09 |
+| Reproducibilidad en un segundo equipo | `evidencias/REPRODUCCION.md` — 34/34 y recuperación idéntica |
+
+### Verificado el 25/09 en el equipo de Eder (instalación desde cero)
+
+Toda la instalación se rehízo en una máquina distinta, con entorno virtual nuevo, para
+comprobar que el proyecto es reproducible y no depende de la configuración de quien lo
+desarrolló. Resultados:
+
+| Prueba | Resultado |
+|---|---|
+| Indexación | 43 fragmentos (misma cifra que en el equipo de origen) |
+| Recuperación de control (M02) | Puntajes RRF idénticos: 0,0328 / 0,0320 / 0,0320 / 0,0156 |
+| Tracking en 4 casos | Correcto, incluido el control de código inexistente |
+| Agente por CLI | 3,1 s de recuperación + 4,8 s de LLM |
+| 7 escenarios (`evaluar.py`) | 34/34 verificaciones, latencia media 14,0 s |
+| Interfaz Streamlit | Funcional, incluido el caso que no debe llamar al LLM |
+
+**El resultado más relevante para la defensa:** al comparar ambas corridas, las tablas de
+fragmentos recuperados no presentan **ninguna** diferencia en los cinco escenarios de
+diagnóstico. Solo cambian la prosa del LLM, las marcas de tiempo y las latencias. Esto prueba
+en la práctica lo que la sección 4.3 sostiene en el diseño: la capa determinista es
+reproducible y la variabilidad está confinada a la generación.
+
+**Defecto reproducido.** La limitación registrada en `REVISION_HUMANA.md` volvió a aparecer:
+el fragmento de la fuente externa `EXT-NORM-002` se recuperó y llegó al contexto, pero el
+modelo no lo citó. Que se repita en otra máquina lo confirma como **sistemático y no
+aleatorio**, lo que es un hallazgo más sólido que un resultado perfecto: es una limitación
+medida, explicable y declarada.
+
+### Restricción de entorno descubierta el 25/09
+
+El proyecto **no instala en Python 3.14**. La causa: `llama-index-retrievers-bm25` exige
+`pystemmer<3.0.0` en todas sus versiones, incluida la 0.8.0, y PyStemmer 2.x no publica
+binario para 3.14, por lo que `pip` intenta compilarlo y falla pidiendo Microsoft C++ Build
+Tools. La solución fue instalar Python 3.13. Queda advertido en el README, porque la
+evaluación exige que un tercero pueda ejecutar el proyecto.
 
 ### Pendiente
 
-1. `src/app.py` — interfaz Streamlit.
-2. Diagrama de arquitectura como imagen.
-3. Documentación técnica e informe ≤ 5 páginas.
-4. Presentación / guion de defensa.
+1. Diagrama de arquitectura como imagen.
+2. Documentación técnica e informe ≤ 5 páginas.
+3. Presentación / guion de defensa.
 
 ---
 
@@ -691,6 +726,10 @@ fuente externa **cambia** el resultado del diagnóstico.
 | 13 | Corrección de la asignación de secciones | Citas precisas a documento y sección |
 | 14 | Implementación de `tracking.py` | Hechos (retraso, tramo, responsabilidad) en código |
 | 15 | README + esta guía actualizados para que Eder pueda probar | Pasos reproducibles sin compartir claves |
+| 16 | Prompts v2, agente orquestador y 7 escenarios con evidencias | 34/34 verificaciones automáticas |
+| 17 | Instalación desde cero en el equipo de Eder | Python 3.14 descartado; entorno replicado en 3.13 |
+| 18 | Reejecución completa de los escenarios en el segundo equipo | Recuperación idéntica; ver `evidencias/REPRODUCCION.md` |
+| 19 | Interfaz Streamlit con panel de evidencia | `src/app.py`, probada en navegador |
 | 16 | Diseño de prompts v1 + `src/prompts.py` | Sistema + 2 plantillas con marcadores |
 | 17 | Prueba v1 sobre caso M02 con Groq (8,9 s) | Acierta en compensación; 3 defectos detectados |
 | 18 | Prompts v2 | Corrige teléfono inventado, fuentes no citadas e intentos restantes |
