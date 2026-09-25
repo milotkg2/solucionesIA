@@ -39,3 +39,6 @@ chroma_db/
 # Logs
 *.log
 logs/
+
+# Material local de estudio (no se versiona: queda solo en el equipo de cada integrante)
+docsEder/

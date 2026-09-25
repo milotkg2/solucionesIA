@@ -36,7 +36,7 @@
 | Prompts (v2, con justificación) | Listos — ver [`prompts/README.md`](prompts/README.md) |
 | Agente orquestador | Funcional |
 | Escenarios de prueba | 7 escenarios, 34/34 verificaciones — ver [`evidencias/escenarios/RESUMEN.md`](evidencias/escenarios/RESUMEN.md) |
-| Interfaz Streamlit | Pendiente |
+| Interfaz Streamlit | Funcional — `streamlit run src/app.py` |
 | Informe (máx. 5 páginas) | Pendiente |
 | Presentación | Pendiente |
 
@@ -44,7 +44,10 @@
 
 ### 0. Requisitos
 
-- Python 3.11+ (probado con 3.13)
+- Python **3.11 a 3.13** (probado con 3.13.15)
+  > **No usar Python 3.14.** `llama-index-retrievers-bm25` exige `pystemmer<3.0.0`, y
+  > PyStemmer 2.x no publica binario para 3.14: `pip install` intentaría compilarlo y
+  > fallaría pidiendo Microsoft C++ Build Tools.
 - [Ollama](https://ollama.com/) instalado (solo para embeddings)
 - Cuenta gratuita en [Groq](https://console.groq.com) (**cada integrante usa su propia clave**)
 
@@ -173,6 +176,21 @@ Genera `evidencias/escenarios/ESC-0X.md`, `RESUMEN.md` y `resultados.json`.
 | `LR-2026-008455` | Retraso 1 día + temporada alta sin plazo extendido informado |
 | `LR-2026-009011` | Paquete no localizable (M07) |
 
+### 8. Levantar la interfaz de demostración
+
+```powershell
+streamlit run src/app.py
+```
+
+Se abre en `http://localhost:8501`. La pantalla muestra la respuesta del agente y, en
+pestañas, toda la evidencia que la sostiene: los hechos que calculó la herramienta de
+tracking antes de llamar al LLM, las consultas de recuperación que el agente derivó de esos
+hechos, los fragmentos recuperados con su score RRF y su posición en cada recuperador, y el
+prompt exacto que recibió el modelo.
+
+Requiere el índice construido (paso 5) y, para generar respuestas, la clave de Groq. Sin
+clave la recuperación sigue funcionando; solo falla la generación.
+
 ## Estructura del repositorio
 
 ```text
@@ -191,9 +209,10 @@ solucionesIA/
 │   └── tracking.py           # consulta CSV + hechos calculados
 ├── data/internos/            # SOP, SLA, políticas, CSV
 ├── data/externos/            # SERNAC + normativa
-├── prompts/                  # (pendiente)
+│   └── app.py                # interfaz Streamlit + panel de evidencia
+├── prompts/                  # prompts del agente + justificación
 ├── arquitectura/             # (pendiente)
-├── evidencias/               # (pendiente)
+├── evidencias/               # escenarios de prueba + reproducción
 ├── presentacion/             # (pendiente)
 └── informe/                  # (pendiente)
 ```
