@@ -1,0 +1,39 @@
+---
+config:
+  flowchart:
+    wrappingWidth: 360
+  themeVariables:
+    fontSize: 15px
+---
+%% Flujo de decision del agente para una consulta (src/agent.py · responder()).
+flowchart TD
+    A(["Consulta del operador"]) --> B{"¿Menciona un codigo<br/>LR-AAAA-NNNNNN?"}
+
+    B -->|No| P1["Flujo politicas<br/>1 consulta RAG con la pregunta<br/>top 5 fragmentos"]
+    P1 --> P2["Prompt consulta_politicas.md"]
+
+    B -->|Si| C["Herramienta de tracking<br/>consultar_envio()"]
+    C --> D{"¿Existe el envio?"}
+    D -->|No| G["Respuesta fija sin LLM<br/>'verifica el codigo'<br/><i>guarda anti-alucinacion</i>"]
+    D -->|Si| E["Hechos verificados<br/>dias de retraso · tramo · motivo<br/>responsable · computa SLA · temporada"]
+    E --> F["Consultas dirigidas por aspecto<br/>motivo · intentos · accion · compensacion<br/>sla · escalamiento · temporada · siniestro<br/>normativa <i>(solo fuentes externas)</i>"]
+    F --> H["Recuperacion hibrida por aspecto<br/>3 por aspecto · ronda por aspecto<br/>sin duplicados · maximo 8"]
+    H --> I["Prompt diagnostico_envio.md<br/>hechos + fragmentos [F#]"]
+
+    P2 --> J["LLM · Groq gpt-oss-120b<br/>system: sistema_agente.md (8 reglas)<br/>temperatura 0.1 · 1 llamada<br/>reintento ante 429"]
+    I --> J
+    J --> K["Normaliza citas 【F#】 → [F#]"]
+    K --> L(["Respuesta + trazabilidad<br/>hechos · fragmentos · consultas · prompt · latencias"])
+    G --> L
+
+    classDef inicio fill:#1F2937,stroke:#9CA3AF,color:#F9FAFB
+    classDef decision fill:#EDE9FE,stroke:#7C3AED,color:#111827
+    classDef paso fill:#DBEAFE,stroke:#2563EB,color:#111827
+    classDef guarda fill:#FEE2E2,stroke:#DC2626,color:#111827
+    classDef llm fill:#FCE7F3,stroke:#DB2777,color:#111827
+
+    class A,L inicio
+    class B,D decision
+    class C,E,F,H,I,P1,P2,K paso
+    class G guarda
+    class J llm

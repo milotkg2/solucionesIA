@@ -37,8 +37,8 @@
 | Agente orquestador | Funcional |
 | Escenarios de prueba | 7 escenarios, 34/34 verificaciones — ver [`evidencias/escenarios/RESUMEN.md`](evidencias/escenarios/RESUMEN.md) |
 | Interfaz Streamlit | Funcional — `streamlit run src/app.py` |
-| Informe (máx. 5 páginas) | Pendiente |
-| Presentación | Pendiente |
+| Informe | Entregado — [`informe/`](informe/) |
+| Presentación | Lista — [`presentacion/`](presentacion/) (PDF) |
 
 ## Cómo ejecutar (guía para Eder / cualquier integrante)
 
@@ -213,8 +213,8 @@ solucionesIA/
 ├── prompts/                  # prompts del agente + justificación
 ├── arquitectura/             # (pendiente)
 ├── evidencias/               # escenarios de prueba + reproducción
-├── presentacion/             # (pendiente)
-└── informe/                  # (pendiente)
+├── presentacion/             # presentación de la defensa (PDF)
+└── informe/                  # informe final (Word)
 ```
 
 ## Integrantes y roles
