@@ -112,6 +112,10 @@ acción y borrador de respuesta con **100% de trazabilidad a la fuente**.
 
 ### 4.1 Diagrama lógico
 
+Versiones gráficas en `arquitectura/`: `diagrama_arquitectura.png` (resumida, la del informe),
+`diagrama_detallado.svg` (cada función real del código) y `flujo_consulta.png` (decisiones del
+agente para una consulta).
+
 ```
                         ┌──────────────────────────────┐
    Operador de la       │   INTERFAZ (Streamlit)       │
@@ -549,6 +553,10 @@ Nota sobre PyStemmer: configurar el stemmer en **español** importa. Sin él, BM
 | Revisión humana de escenarios | `evidencias/escenarios/REVISION_HUMANA.md` — 2 defectos menores documentados |
 | Interfaz Streamlit con panel de evidencia | `src/app.py` — probada en navegador el 25/09 |
 | Reproducibilidad en un segundo equipo | `evidencias/REPRODUCCION.md` — 34/34 y recuperación idéntica |
+| Diagramas de arquitectura | `arquitectura/` — resumido, detallado y flujo de decisión del agente |
+| Documentación técnica | `docs/documentacion_tecnica.md` |
+| Informe final | `informe/` — entregado en AVA el 25/09 |
+| Presentación | `presentacion/` — PDF de la defensa |
 
 ### Verificado el 25/09 en el equipo de Eder (instalación desde cero)
 
@@ -587,9 +595,7 @@ evaluación exige que un tercero pueda ejecutar el proyecto.
 
 ### Pendiente
 
-1. Diagrama de arquitectura como imagen.
-2. Documentación técnica e informe ≤ 5 páginas.
-3. Presentación / guion de defensa.
+1. Defensa del 26/09 (10 min de exposición + 10 min de preguntas).
 
 ---
 
@@ -702,8 +708,9 @@ API externa para la generación; y el sistema no emite calificaciones jurídicas
 
 **¿Qué rol cumple cada fuente externa?**
 La de SERNAC dimensiona el problema y el riesgo reputacional; la normativa fija que el plazo
-exigible es el informado al consumidor. Usar el caso `LR-2026-008455` como ejemplo de que la
-fuente externa **cambia** el resultado del diagnóstico.
+exigible es el informado al consumidor. Con el caso `LR-2026-008455`, explicar que la política
+interna traduce esa norma a una regla operativa y que el sistema recupera ambas; no afirmar
+que sin la fuente externa el resultado cambiaría, porque ESC-05 no lo demuestra (ver §5.7).
 
 ---
 
@@ -726,10 +733,6 @@ fuente externa **cambia** el resultado del diagnóstico.
 | 13 | Corrección de la asignación de secciones | Citas precisas a documento y sección |
 | 14 | Implementación de `tracking.py` | Hechos (retraso, tramo, responsabilidad) en código |
 | 15 | README + esta guía actualizados para que Eder pueda probar | Pasos reproducibles sin compartir claves |
-| 16 | Prompts v2, agente orquestador y 7 escenarios con evidencias | 34/34 verificaciones automáticas |
-| 17 | Instalación desde cero en el equipo de Eder | Python 3.14 descartado; entorno replicado en 3.13 |
-| 18 | Reejecución completa de los escenarios en el segundo equipo | Recuperación idéntica; ver `evidencias/REPRODUCCION.md` |
-| 19 | Interfaz Streamlit con panel de evidencia | `src/app.py`, probada en navegador |
 | 16 | Diseño de prompts v1 + `src/prompts.py` | Sistema + 2 plantillas con marcadores |
 | 17 | Prueba v1 sobre caso M02 con Groq (8,9 s) | Acierta en compensación; 3 defectos detectados |
 | 18 | Prompts v2 | Corrige teléfono inventado, fuentes no citadas e intentos restantes |
@@ -738,6 +741,13 @@ fuente externa **cambia** el resultado del diagnóstico.
 | 21 | Aspecto "normativa" solo en fuentes externas | EXT-NORM-002 llega al contexto en ESC-05 |
 | 22 | `src/evaluar.py`, 7 escenarios | 34/34 verificaciones, latencia media 14,1 s |
 | 23 | Revisión humana | 2 defectos menores documentados como limitación |
+| 24 | Instalación desde cero en el equipo de Eder | Python 3.14 descartado; entorno replicado en 3.13 |
+| 25 | Reejecución completa de los escenarios en el segundo equipo | Recuperación idéntica; ver `evidencias/REPRODUCCION.md` |
+| 26 | Interfaz Streamlit con panel de evidencia | `src/app.py`, probada en navegador |
+| 27 | Diagramas de arquitectura | Resumido (`diagrama_arquitectura`), detallado (`diagrama_detallado.svg`) y flujo de decisión (`flujo_consulta.png`) |
+| 28 | Documentación técnica | `docs/documentacion_tecnica.md` completa |
+| 29 | Informe final | `informe/informe_final EderValdivia-CamiloRomero.docx`, entregado en AVA |
+| 30 | Presentación de la defensa | `presentacion/Presentación Técnica IA Mesa Control.pdf` |
 
 ---
 
